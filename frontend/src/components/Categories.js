@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Link from "@material-ui/core/Link";
+
 import { makeStyles } from "@material-ui/core/styles";
 
 import HealingIcon from '@mui/icons-material/Healing';
@@ -37,27 +39,33 @@ const Icons = ({ category }) => {
     switch (category) {
         case 'Manga':
             return (
-                <a title={category} href={category}>
-                    <HealingIcon className={classes.link} style={{ fontSize: sizeIcon }} alt></HealingIcon>
-                </a>
+                <Link title={category} href={category}>
+                    <HealingIcon className={classes.link} style={{ fontSize: sizeIcon }} href={category}></HealingIcon>
+                </Link>
             );
         case 'Anime':
             return (
-                <a title={category} href={category}>
-                    <AutoAwesomeIcon className={classes.link} style={{ fontSize: sizeIcon }} alt></AutoAwesomeIcon>
-                </a>
+                <Link title={category} href={category}>
+                    <AutoAwesomeIcon className={classes.link} style={{ fontSize: sizeIcon }}></AutoAwesomeIcon>
+                </Link>
             );
         case 'General':
             return (
-                <a title={category} href={category}>
-                    <LibraryBooksIcon className={classes.link} style={{ fontSize: sizeIcon }} alt></LibraryBooksIcon>
-                </a>
+                <Link title={category}>
+                    <LibraryBooksIcon className={classes.link} style={{ fontSize: sizeIcon }} href={category}></LibraryBooksIcon>
+                </Link>
             );
         case 'Listas':
             return (
-                <a title={category} href={category}>
-                    <LibraryBooksIcon className={classes.link} style={{ fontSize: sizeIcon }} alt></LibraryBooksIcon>
-                </a>
+                <Link title={category} href={category}>
+                    <LibraryBooksIcon className={classes.link} style={{ fontSize: sizeIcon }}></LibraryBooksIcon>
+                </Link>
+            );
+        case 'Shounen':
+            return (
+                <Link title={category} href={category}>
+                    <LibraryBooksIcon className={classes.link} style={{ fontSize: sizeIcon }}></LibraryBooksIcon>
+                </Link>
             );
         default:
             throw new Error();

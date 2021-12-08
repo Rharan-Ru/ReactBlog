@@ -14,6 +14,7 @@ from users.models import IpAddress
 
 from datetime import timedelta
 from django.utils import timezone
+import bleach
 
 
 def get_ip_address(request):
@@ -45,8 +46,16 @@ class ArticlesView(APIView):
 class PopularWeekArticlesView(APIView):
     def get(self, request, format=None):
         one_week_ago = timezone.now() - timedelta(days=7)
-        week_popular_articles = Article.objects.filter(published_date__range=(one_week_ago, timezone.now()))
+        week_popular_articles = Article.objects.filter(
+            published_date__range=(one_week_ago, timezone.now()))
         serializer = ArticleSerializer(week_popular_articles, many=True)
+        return Response(serializer.data)
+
+
+class PopularArticlesView(APIView):
+    def get(self, request, format=None):
+        popular_articles = Article.objects.all().order_by('-views')
+        serializer = ArticleSerializer(popular_articles, many=True)
         return Response(serializer.data)
 
 
@@ -69,22 +78,31 @@ class ArticleDetailView(APIView):
 
 class ArticlePostView(APIView):
     parser_classes = (MultiPartParser, FormParser)
+
     def post(self, request, format=None):
         try:
+            text = request.data['content']
+            content = bleach.clean(text, tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul', 'p', 'br', 'img', 's', 'u', ], 
+            attributes={'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['alt', 'src', 'width', 'height'],}, 
+            styles=[], 
+            protocols=['http', 'https', 'mailto'], 
+            strip=False, 
+            strip_comments=True)
+            print(content)
             Article.objects.create(
-                title=request.data['title'],
-                slug=slugify(request.data['title'], allow_unicode=True),
-                content=SafeString(request.data['content']),
-                image=request.data['image'],
-                author=request.user,
+                title = request.data['title'],
+                slug = slugify(request.data['title'], allow_unicode=True),
+                content = content,
+                image = request.data['image'],
+                author = request.user,
             )
-            article = Article.objects.get(title=request.data['title'])
+            article=Article.objects.get(title = request.data['title'])
             for categ in request.data['categories'].split(','):
-                category = Category.objects.get(name=categ)
+                category=Category.objects.get(name = categ)
                 article.category.add(category)
                 article.save()
 
-            return Response(status=status.HTTP_200_OK)
+            return Response(status = status.HTTP_200_OK)
         except Exception as erro:
             print(erro)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status = status.HTTP_400_BAD_REQUEST)

@@ -1,7 +1,7 @@
 import React from 'react';
 import axiosInstance from '../axios';
 import { useParams } from 'react-router-dom';
-import ReactHtmlParser from 'react-html-parser';
+import parse from 'html-react-parser';
 
 //MaterialUI
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -48,7 +48,7 @@ const Single = () => {
 					paragraph
 					style={{ whiteSpace: 'pre-wrap' }}
 				>
-					{ReactHtmlParser(data.posts.content)}
+					{parse(String(data.posts.content))}
 				</Typography>
 			</Container>
 		</Container>

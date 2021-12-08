@@ -8,7 +8,6 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import CardMedia from "@material-ui/core/CardMedia";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
 
 import { makeStyles } from "@material-ui/core/styles";
