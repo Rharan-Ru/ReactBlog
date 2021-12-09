@@ -35,7 +35,7 @@ class Article(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     content = RichTextField()
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=options, default='published')
+    status = models.CharField(max_length=10, choices=options, default='draft')
     published_date = models.DateTimeField(default=now)
     views = models.ManyToManyField(IpAddress, blank=True)
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import axiosInstance from '../axios';
+import axiosInstance from '../../axios';
 import { useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 

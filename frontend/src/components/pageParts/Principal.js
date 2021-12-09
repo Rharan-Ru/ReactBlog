@@ -1,6 +1,6 @@
 import React from 'react';
-import Categories from './Categories';
-import ParseHtml from './ParseHtmlContent';
+import Categories from '../utils/Categories';
+import ParseHtml from '../utils/ParseHtmlContent';
 
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";

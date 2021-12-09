@@ -1,14 +1,11 @@
 import React from 'react';
-import axiosInstance from '../axios';
+import axiosInstance from '../../axios';
 import { useNavigate } from 'react-router-dom';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -36,14 +33,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const Register = () => {
+const Login = () => {
     const navigate = useNavigate();
     const initialFormData = Object.freeze(
         {
-            email: '',
             username: '',
-            password1: '',
-            password2: '',
+            password: '',
         },
     );
 
@@ -61,19 +56,17 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
 
         axiosInstance
-            .post('users/register/', {
-                email: formData.email,
+            .post('token/', {
                 username: formData.username,
-                password1: formData.password1,
-                password2: formData.password2,
+                password: formData.password,
             })
             .then((res) => {
-                navigate('/login');
-                console.log(res);
-                console.log(res.data);
+                localStorage.setItem('access_token', res.data.access);
+                localStorage.setItem('refresh_token', res.data.refresh);
+                axiosInstance.defaults.headers['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
+                navigate('/');
             });
     }
 
@@ -89,25 +82,13 @@ const Register = () => {
                 </Typography>
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12}>
                             <TextField
                                 variant="outlined"
-                                autoComplete="email"
-                                name="email"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
                                 autoComplete="username"
                                 name="username"
+                                required
+                                fullWidth
                                 id="username"
                                 label="Username"
                                 onChange={handleChange}
@@ -119,32 +100,11 @@ const Register = () => {
                                 required
                                 fullWidth
                                 autoComplete="current-password"
-                                name="password1"
+                                name="password"
                                 label="Password"
-                                type="password1"
-                                id="password1"
                                 type="password"
+                                id="password"
                                 onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                autoComplete="current-password"
-                                name="password2"
-                                label="Password Confirmation"
-                                type="password2"
-                                id="password2"
-                                type="password"
-                                onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControlLabel
-                                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                label="I want to receive inspiration, marketing promotions and updates via email."
                             />
                         </Grid>
                     </Grid>
@@ -155,19 +115,12 @@ const Register = () => {
                         className={classes.submit}
                         onClick={handleSubmit}
                     >
-                        Sign Up
+                        Login
                     </Button>
-                    <Grid container justifyContent="flex-end">
-                        <Grid item>
-                            <Link href="#" variant="body2">
-                                Already have an account? Sign in
-                            </Link>
-                        </Grid>
-                    </Grid>
                 </form>
             </div>
         </Container>
     );
 };
 
-export default Register;
+export default Login;

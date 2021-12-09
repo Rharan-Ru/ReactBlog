@@ -16,6 +16,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Add custom claims
         token['name'] = user.username
+        if user.is_superuser:
+            token['admin'] = True
         # ...
         return token
 

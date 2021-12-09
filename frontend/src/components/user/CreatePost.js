@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axiosInstance from '../axios';
+import axiosInstance from '../../axios';
 import { useNavigate } from 'react-router-dom';
 
 //MaterialUI
@@ -121,7 +121,7 @@ export default function Create() {
 			typeof value === 'string' ? value.split(',') : value,
 		);
 	};
-	
+
 	return (
 		<Container component="main">
 			<CssBaseline />
@@ -143,14 +143,14 @@ export default function Create() {
 								onChange={handleChange}
 							/>
 						</Grid>
-						<Grid item xs={12} style={{ height: '400px' }}>
+						<Grid item xs={12} style={{ height: '560px' }}>
 							<ReactQuill
 								theme='snow'
 								value={postDataContent}
 								onChange={(value) => updateDataContent(value)}
 								modules={modules}
 								// formats={formats}
-								style={{ height: '300px' }}
+								style={{ height: '460px' }}
 								required
 							/>
 						</Grid>
@@ -164,7 +164,7 @@ export default function Create() {
 								onChange={handleChangeCategories}
 								input={<OutlinedInput label="Tag" />}
 								renderValue={(selected) => selected.join(', ')}
-								style={{width: '100%'}}
+								style={{ width: '100%' }}
 							>
 								{names.map((name) => (
 									<MenuItem key={name} value={name}>
@@ -180,9 +180,17 @@ export default function Create() {
 								className={classes.input}
 								id="post-image"
 								onChange={handleChange}
+								multiple
 								name="image"
 								type="file"
+								style={{display: 'none'}}
 							/>
+							<label htmlFor="post-image">
+								<Button variant="raised" component="span" style={{width: '100%', height: '100%', backgroundColor: 'gray'}}>
+									<PhotoCamera />
+								</Button>
+							</label>
+							
 						</Grid>
 					</Grid>
 					<Button

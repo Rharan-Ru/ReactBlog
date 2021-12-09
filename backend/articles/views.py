@@ -5,7 +5,7 @@ from django.utils.safestring import SafeString
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from .serializers import ArticleSerializer
@@ -106,3 +106,20 @@ class ArticlePostView(APIView):
         except Exception as erro:
             print(erro)
             return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+
+class AdminPageView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    def get(self, request, format=None):
+        articles = Article.objects.all().order_by('-published_date')
+
+        todos = articles.all().count()
+
+        paginator = Paginator(articles, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        serializer = ArticleSerializer(page_obj, many=True)
+        print(request.user.is_superuser)
+
+        return Response({'data': serializer.data, 'num_artigos': todos, 'super_user': request.user.is_superuser})

@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import Categories from './Categories';
+import Categories from '../utils/Categories';
 
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
@@ -15,7 +15,7 @@ import Box from "@material-ui/core/Box";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { makeStyles } from "@material-ui/core/styles";
-import ParseHtml from './ParseHtmlContent';
+import ParseHtml from '../utils/ParseHtmlContent';
 
 const useStyles = makeStyles((theme) => ({
     truncate: {
@@ -73,13 +73,13 @@ const Item = ({ item }) => {
                     />
                     <Categories list={item.category_name} />
                     <CardContent style={{ height: 150, backgroundColor: '#312e2e', color: 'white', borderRadius: '0 0 10px 10px' }}>
-                        <Typography > {moment(item.published_date).format('llll')} </Typography>
+                        <Typography variant="body2"> {moment(item.published_date).format('llll')} </Typography>
                         <Grid container style={{ display: 'flex', alignItems: 'center' }}>
                             <Grid item>
                                 <VisibilityIcon style={{ fontSize: '20px', }}></VisibilityIcon>
                             </Grid>
                             <Grid item>
-                                <Typography style={{ marginLeft: '10px' }}> {item.views} Views</Typography>
+                                <Typography variant="body2" style={{ marginLeft: '10px' }}> {item.views} Views</Typography>
                             </Grid>
                         </Grid>
                         <Box className={classes.textBox}>
