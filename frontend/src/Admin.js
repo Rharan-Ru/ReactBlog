@@ -5,10 +5,11 @@ import Posts from './components/pageParts/Posts';
 import Principal from './components/pageParts/Principal';
 import Side from './components/pageParts/Side';
 import IconAnimation from './components/pageParts/IconAnimation';
+import PerfilAdmin from './components/adminPage/adminPerfil';
 
 import Grid from "@material-ui/core/Grid";
 import Pagination from '@mui/material/Pagination';
-import Container  from '@material-ui/core/Container';
+import Container from '@material-ui/core/Container';
 
 
 const storiesReducer = (state, action) => {
@@ -49,24 +50,16 @@ const AdminPage = () => {
     const perPage = 5;
     return (
         <React.Fragment>
-            <Container>
-                {stories.isLoading ? <h2 align='center' > Loading Posts </h2> :
-                    <div>
-                        <div>
-                            <ul>
-                                {stories.data.map(item => <li key={item.id}>{item.title}</li>)}
-                            </ul>
-                        </div>
-                        <Pagination
-                            style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
-                            count={Math.round((totalPage / perPage))}
-                            defaultPage={page}
-                            color="secondary"
-                            onChange={(event, value) => setPage(value)}
-                        />
-                    </div>
-                }
+            <Container style={{ padding: '0px', margin: '0px' }}>
+                {stories.isLoading ? <h2 align='center' > Loading Posts </h2> : <PerfilAdmin list={stories.data} />}
             </Container>
+            <Pagination
+                style={{ display: 'flex', justifyContent: 'center', height: '15vh', width: '100%' }}
+                count={Math.round((totalPage / perPage))}
+                defaultPage={page}
+                color="secondary"
+                onChange={(event, value) => setPage(value)}
+            />
         </React.Fragment>
     );
 };

@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
             transition: '0s',
             color: '#55D0E0',
             animation: '$upIcon 1.5s ease-in-out infinite',
-            filter: 'drop-shadow(0 0 .5rem #55D0E0)'
+            // filter: 'drop-shadow(0 0 .5rem #55D0E0)'
+            boxShadow: '0 0 20px 3px #fff, 0 0 40px 6px #f0f, 0 0 60px 9px #0ff',
         },
     },
     '@keyframes upIcon': {

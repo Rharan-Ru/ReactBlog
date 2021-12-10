@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from './App';
+
 import AdminPage from './Admin';
+import AdminSingle from './components/adminPage/adminPost';
+import AdminUpdatePost from './components/adminPage/adminUpdate';
 
 import Header from './components/pageParts/Header';
 import Footer from './components/pageParts/Footer';
@@ -22,7 +25,13 @@ const routing = (
       <Header />
       <Routes>
         <Route path="/" element={<App />} />
-        {token.admin && <Route path="/admin" element={<AdminPage />} />}
+        {token.admin && 
+          <React.Fragment>
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin/:slug" element={<AdminSingle />} />
+            <Route path="/admin/update/:slug" element={<AdminUpdatePost />} />
+          </React.Fragment>
+        }
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<SignUp />} />
