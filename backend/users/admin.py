@@ -13,7 +13,7 @@ class UserAdminConfig(UserAdmin):
     list_display = ('email', 'username', 'first_name',
                     'is_active', 'is_staff', 'is_superuser')
     fieldsets = (
-        (None, {'fields': ('email', 'username', 'first_name',)}),
+        (None, {'fields': ('email', 'username', 'first_name', 'slug', 'image',)}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser')}),
         ('Personal', {'fields': ('about',)}),
     )
@@ -23,10 +23,12 @@ class UserAdminConfig(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'first_name', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser')}
+            'fields': ('email', 'username', 'slug', 'image', 'first_name', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser')}
          ),
     )
+    prepopulated_fields = {'slug': ('username',), }
 
 
 admin.site.register(User, UserAdminConfig)
 admin.site.register(IpAddress)
+# admin.site.register(Profile)

@@ -1,56 +1,71 @@
 import React from 'react';
+
+// Custom axios and librarys
 import axiosInstance from '../../axios';
 import { useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 
+// My components
+import Side from './Side';
+
 //MaterialUI
-import CssBaseline from '@material-ui/core/CssBaseline';
-// import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core';
+import { Card, CardMedia, Grid, Typography, Container } from '@material-ui/core';
 
 
-// const useStyles = makeStyles((theme) => ({
-// 	paper: {
-// 		marginTop: theme.spacing(2),
-// 		display: 'flex',
-// 		flexDirection: 'column',
-// 	},
-// }));
+const useStyles = makeStyles((theme) => ({
+	Content: {
+		'& img': {
+			width: '100%',
+			objectFit: 'contain',
+			maxHeight: '70vh',
+		},
+		'& p': {
+			margin: '0px',
+		},
+	},
+}));
 
 
 const Single = () => {
-	const [data, setData] = React.useState({ posts: [] });
+	const classes = useStyles();
+
+	const [data, setData] = React.useState({ post: [] });
 	const { slug } = useParams();
-	console.log(slug)
+
 	React.useEffect(() => {
 		axiosInstance.get('details/' + slug).then((res) => {
-			setData({ posts: res.data });
-			console.log(res.data);
+			setData({ post: res.data });
 		});
 	}, [setData, slug]);
 
 	return (
-		<Container component="main">
-			<CssBaseline />
-			<Container >
-				<Typography
-					component="h3"
-					variant="h2"
-					color="textPrimary"
-					gutterBottom
-				>
-					{data.posts.title}
-				</Typography>
-				<Typography
-					variant="body1"
-					color="textSecondary"
-					paragraph
-					style={{ whiteSpace: 'pre-wrap' }}
-				>
-					{parse(String(data.posts.content))}
-				</Typography>
-			</Container>
+		<Container style={{marginTop: '24px'}}>
+			<Grid container spacing={1} style={{ width: '100%' }}>
+				<Grid item md={8} style={{ width: '100%' }}>
+					<Typography
+						component="h3"
+						variant="h2"
+						color="textPrimary"
+						style={{ borderTop: '3px solid black' }}
+					>
+						{data.post.title}
+						<Card style={{backgroundColor: "none", boxShadow: 'none'}}>
+							<CardMedia
+								component="img"
+								image={'http://127.0.0.1:8000' + data.post.image}
+								style={{maxHeight: '60vh', objectFit: 'contain'}}
+							/>
+						</Card>
+					</Typography>
+					<div className={classes.Content} style={{ whiteSpace: 'pre-wrap' }}>
+						{parse(String(data.post.content))}
+					</div>
+				</Grid>
+				<Grid item md={4} style={{ width: '100%' }}>
+					<Side />
+				</Grid>
+			</Grid>
 		</Container>
 	);
 };

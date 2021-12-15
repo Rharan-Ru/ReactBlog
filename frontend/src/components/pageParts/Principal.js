@@ -1,5 +1,5 @@
 import React from 'react';
-import Categories from '../utils/Categories';
+import {Categories} from '../utils/Categories';
 import ParseHtml from '../utils/ParseHtmlContent';
 
 import Typography from "@material-ui/core/Typography";
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
         color: 'white',
         padding: '10px',
         transition: '500ms',
+        borderRadius: '10px',
     },
     truncate: {
         display: "-webkit-box",
@@ -32,10 +33,10 @@ const useStyles = makeStyles((theme) => ({
         overflow: "hidden"
     },
     principal: {
-        minHeight: '100vh',
+        minHeight: '80vh',
+        marginBottom: '16px',
     },
     customCard: {
-        padding: '4px', 
         boxShadow: "none",
         overflow: 'visible',
         '&:hover': {
@@ -52,19 +53,19 @@ const useStyles = makeStyles((theme) => ({
 const Principal = ({ items }) => {
     const classes = useStyles();
     return (
-        <Grid container className={classes.principal}>
-            <Grid item md={6} style={{width: '100%'}} >
-                <CustomCard item={items[0]} heightCustom={'100vh'} />
+        <Grid container spacing={1} className={classes.principal}>
+            <Grid item md={6} style={{ width: '100%' }} >
+                <CustomCard item={items[0]} heightCustom={'80vh'} />
             </Grid>
-            <Grid container item md={6} style={{width: '100%'}}>
-                <Grid item sm={12} style={{width: '100%',}}>
-                    <CustomCard item={items[1]} heightCustom={'50vh'} />
+            <Grid container spacing={1} item md={6}>
+                <Grid item sm={12} style={{ width: '100%'}}>
+                    <CustomCard item={items[1]} heightCustom={'40vh'} />
                 </Grid>
-                <Grid item xs={6} style={{width: '100%'}}>
-                    <CustomCard item={items[2]} heightCustom={'50vh'} />
+                <Grid item xs={6} style={{ width: '100%'}}>
+                    <CustomCard item={items[2]} heightCustom={'39vh'} />
                 </Grid>
-                <Grid item xs={6} style={{width: '100%'}}>
-                    <CustomCard item={items[3]} heightCustom={'50vh'} />
+                <Grid item xs={6} style={{ width: '100%'}}>
+                    <CustomCard item={items[3]} heightCustom={'39vh'} />
                 </Grid>
             </Grid>
         </Grid>
@@ -74,21 +75,21 @@ const Principal = ({ items }) => {
 const CustomCard = ({ item, heightCustom }) => {
     const classes = useStyles();
     return (
-        <Card style={{ height: `${heightCustom}`, width: '100%'}} className={classes.customCard}>
-            <Link className={classes.link} href={'post/' + item.slug} color='textPrimary' underline='none'>
-                <CardActionArea >
+        <Card style={{ height: heightCustom, width: '100%' }} className={classes.customCard}>
+            <CardActionArea>
+                <Categories list={item.category_name} />
+                <Link href={'post/' + item.slug} color='textPrimary' underline='none'>
                     <CardMedia
                         component="img"
-                        image='https://geekdama.com.br/wp-content/uploads/2020/06/one-piece-bando-wano-postcover-800x450.jpg'
-                        style={{ height: `${heightCustom}`}}
+                        image={'http://127.0.0.1:8000' + item.image}
+                        style={{ height: heightCustom, borderRadius: '10px'}}
                     />
-                    <Categories list={item.category_name} />
                     <Box className={classes.textBox}>
                         <Typography variant="h5">{item.title}</Typography>
                         <Typography variant="body2" className={classes.truncate}>{ParseHtml(item.content)}</Typography>
                     </Box>
-                </CardActionArea>
-            </Link>
+                </Link>
+            </CardActionArea>
         </Card>
     );
 };

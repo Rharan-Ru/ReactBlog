@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import Categories from '../utils/Categories';
+import { Categories } from '../utils/Categories';
 
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
         height: '15vh',
     },
     customCard: {
-        padding: '0 4px 0 4px',
         boxShadow: "none",
         overflow: 'visible',
         '&:hover': {
@@ -51,52 +50,51 @@ const useStyles = makeStyles((theme) => ({
 
 const Posts = ({ list }) => {
     return (
-        <div style={{ width: '100%' }}>
+        <React.Fragment>
             {list.map(item => <Item key={item.id} item={item} />)}
-        </div>
+        </React.Fragment>
     );
 };
 
 
 const Item = ({ item }) => {
-    var img = 'https://source.unsplash.com/random/';
     const classes = useStyles();
     return (
-        <Card className={classes.customCard} style={{ width: '100%' }}>
-            <Link className={classes.link} href={'post/' + item.slug} color='textPrimary' underline='none'>
+        <Grid item lg={6} sm={6}  style={{ width: '100%'}}>
+            <Card className={classes.customCard} style={{ width: '100%' }}>
                 <CardActionArea>
-                    <CardMedia
-                        component="img"
-                        height='150'
-                        image={img}
-                        style={{ borderRadius: '10px 10px 0 0' }}
-                    />
                     <Categories list={item.category_name} />
-                    <CardContent style={{ height: 150, backgroundColor: '#312e2e', color: 'white', borderRadius: '0 0 10px 10px' }}>
-                        <Typography variant="body2"> {moment(item.published_date).format('llll')} </Typography>
-                        <Grid container style={{ display: 'flex', alignItems: 'center' }}>
-                            <Grid item>
-                                <VisibilityIcon style={{ fontSize: '20px', }}></VisibilityIcon>
+                    <Link className={classes.link} href={'post/' + item.slug} color='textPrimary' underline='none'>
+                        <CardMedia
+                            component="img"
+                            height='200'
+                            image={'http://127.0.0.1:8000' + item.image}
+                            style={{ borderRadius: '10px 10px 0 0' }}
+                        />
+                        <CardContent style={{ height: 150, backgroundColor: '#312e2e', color: 'white', borderRadius: '0 0 10px 10px' }}>
+                            <Typography variant="body2" style={{ color: 'white' }}> {moment(item.published_date).format('llll')} </Typography>
+                            <Grid container style={{ display: 'flex', alignItems: 'center', color: 'white' }}>
+                                <Grid item>
+                                    <VisibilityIcon style={{ fontSize: '20px', }}></VisibilityIcon>
+                                </Grid>
+                                <Grid item>
+                                    <Typography variant="body2" style={{ marginLeft: '10px' }}> {item.views} Views</Typography>
+                                </Grid>
                             </Grid>
-                            <Grid item>
-                                <Typography variant="body2" style={{ marginLeft: '10px' }}> {item.views} Views</Typography>
-                            </Grid>
-                        </Grid>
-                        <Box className={classes.textBox}>
-                            <Typography className={classes.textHov} gutterBottom variant="h5" component="div">{item.title}</Typography>
-                            <Typography
-                                variant="body2"
-                                className={classes.truncate}
-                                component="div">
-                                {ParseHtml(item.content)}
-                            </Typography>
-                        </Box>
-                    </CardContent>
+                            <Box className={classes.textBox}>
+                                <Typography className={classes.textHov} gutterBottom variant="h5" component="div">{item.title}</Typography>
+                                <Typography
+                                    variant="body2"
+                                    className={classes.truncate}
+                                    component="div">
+                                    {ParseHtml(item.content)}
+                                </Typography>
+                            </Box>
+                        </CardContent>
+                    </Link>
                 </CardActionArea>
-                <CardActions>
-                </CardActions>
-            </Link>
-        </Card>
+            </Card>
+        </Grid>
     );
 };
 

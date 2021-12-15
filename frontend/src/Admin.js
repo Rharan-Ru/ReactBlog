@@ -1,13 +1,8 @@
 import React from 'react';
 import axiosInstance from './axios';
 
-import Posts from './components/pageParts/Posts';
-import Principal from './components/pageParts/Principal';
-import Side from './components/pageParts/Side';
-import IconAnimation from './components/pageParts/IconAnimation';
 import PerfilAdmin from './components/adminPage/adminPerfil';
 
-import Grid from "@material-ui/core/Grid";
 import Pagination from '@mui/material/Pagination';
 import Container from '@material-ui/core/Container';
 

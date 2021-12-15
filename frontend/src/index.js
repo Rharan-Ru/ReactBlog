@@ -16,31 +16,51 @@ import SignUp from './components/user/Logout';
 import Single from './components/pageParts/Single';
 import Search from './components/utils/Search';
 import Create from './components/user/CreatePost';
+import UserPerfil from './components/user/UserProfile/Profile';
+import ListUsersProfiles from './components/user/UserProfile/ListProfiles';
+import ListCategories from './components/pageParts/ListCategories';
 
-const local_access_token = localStorage.getItem('access_token')
-const token = JSON.parse(atob(local_access_token.split('.')[1]));
 
-const routing = (
-  <BrowserRouter>
+const Rotas = () => {
+  const [admin, setAdmin] = React.useState(false);
+  const local_access_token = localStorage.getItem('access_token')
+  React.useEffect(() => {
+    if (local_access_token) {
+      const token = JSON.parse(atob(local_access_token.split('.')[1]));
+      token.admin && setAdmin(true);
+    }
+    else {
+      setAdmin(false);
+    };
+  }, [local_access_token]);
+
+  return (
+    <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<App />} />
-        {token.admin && 
-          <React.Fragment>
+        {
+          admin &&
+          <>
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/:slug" element={<AdminSingle />} />
             <Route path="/admin/update/:slug" element={<AdminUpdatePost />} />
-          </React.Fragment>
+          </>
         }
+        <Route path="/" element={<App />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<SignUp />} />
+        <Route path="/perfils" element={<ListUsersProfiles />} />
+        <Route path="/perfils/:slug" element={<UserPerfil />} />
         <Route path="/create" element={<Create />} />
         <Route path="/post/:slug" element={<Single />} />
         <Route path="/search" element={<Search />} />
+
+        <Route path="/categoria/:categoria" element={<ListCategories />} />
       </Routes>
       <Footer />
-  </BrowserRouter>
-);
+    </BrowserRouter >
+  )
+};
 
-ReactDOM.render(routing, document.getElementById('root'));
+ReactDOM.render(<Rotas />, document.getElementById('root'));

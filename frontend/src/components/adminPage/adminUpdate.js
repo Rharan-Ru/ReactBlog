@@ -56,8 +56,6 @@ const names = [
 ];
 
 
-
-
 export default function AdminUpdatePost() {
     const classes = useStyles();
     const history = useNavigate();
@@ -118,13 +116,12 @@ export default function AdminUpdatePost() {
     const handleSubmit = (e) => {
         e.preventDefault();
         let formData = new FormData();
-        formData.append('original_title', data.post.title)
         formData.append('title', postData.title);
         formData.append('content', postDataContent.content);
         formData.append('categories', personName);
         formData.append('image', postimage);
         console.log(postDataContent);
-        axiosInstance.post(`admin/update/`, formData);
+        axiosInstance.post(`admin/update/` + slug, formData);
         // history({
         // 	pathname: '/',
         // });
@@ -222,7 +219,7 @@ export default function AdminUpdatePost() {
                                 variant="contained"
                                 color="secondary"
                                 className={classes.submit}
-                                onClick={handleSubmit}
+                                href={'http://localhost:3000/admin/'}
                             >
                                 Back
                             </Button>

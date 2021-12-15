@@ -1,15 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.conf import settings
 from ckeditor.fields import RichTextField
 
 from users.models import IpAddress
 # Create your models here.
-
-
-class ImageTest(models.Model):
-    image = models.ImageField(upload_to='project/img', blank=True, null=True)
 
 
 class Category(models.Model):

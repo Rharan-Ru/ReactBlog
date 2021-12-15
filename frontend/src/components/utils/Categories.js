@@ -1,19 +1,21 @@
 import React from 'react';
 
 import Link from "@material-ui/core/Link";
+import { Box, Typography } from '@material-ui/core';
 
 import { makeStyles } from "@material-ui/core/styles";
 
 import HealingIcon from '@mui/icons-material/Healing';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import CookieIcon from '@mui/icons-material/Cookie';
 
 const useStyles = makeStyles((theme) => ({
-    link: {
+    linkCustom: {
         padding: '5px',
-        margin: '0px 0px 0px 10px',
         color: 'purple',
+        margin: '5px',
         transition: '500ms',
         borderRadius: '50%',
         backgroundColor: "black",
@@ -27,49 +29,62 @@ const useStyles = makeStyles((theme) => ({
 
 const Categories = ({ list }) => {
     return (
-        <div style={{ display: 'flex', position: 'absolute', top: '-7px', left: '0', width: '100%', }}>
-            {list.map(item => <Icons key={item} category={item} />)}
-        </div>
+        <React.Fragment>
+            <Box style={{ display: 'flex', position: 'absolute', top: '-15px', left: '0', width: '100%', }}>
+                {list.map(item =>
+                    <Link key={item} title={item} href={'http://localhost:3000/categoria/' + item.toLowerCase()}>
+                        <Icons category={item} sizeIcon={'40px'} />
+                    </Link>
+                )}
+            </Box>
+        </React.Fragment>
     );
 };
 
-const Icons = ({ category }) => {
+
+const HeaderCategories = ({ list, classes }) => {
+    return (
+        <React.Fragment>
+            {list.map(item =>
+                <Link key={item} title={item} href={'http://localhost:3000/categoria/' + item.toLowerCase()} className={classes} underline='none'>
+                    <Icons category={item} sizeIcon={'30px'} />
+                    <Typography variant='body2' style={{padding: '5px'}}>{item}</Typography>
+                </Link>
+            )}
+        </React.Fragment>
+    );
+};
+
+
+const Icons = ({ category, sizeIcon }) => {
     const classes = useStyles();
-    const sizeIcon = '40px';
     switch (category) {
         case 'Manga':
             return (
-                <Link title={category} href={category}>
-                    <HealingIcon className={classes.link} style={{ fontSize: sizeIcon }} href={category}></HealingIcon>
-                </Link>
+                <HealingIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></HealingIcon>
             );
         case 'Anime':
             return (
-                <Link title={category} href={category}>
-                    <AutoAwesomeIcon className={classes.link} style={{ fontSize: sizeIcon }}></AutoAwesomeIcon>
-                </Link>
+                <AutoAwesomeIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></AutoAwesomeIcon>
             );
-        case 'General':
+        case 'Geral':
             return (
-                <Link title={category}>
-                    <LibraryBooksIcon className={classes.link} style={{ fontSize: sizeIcon }} href={category}></LibraryBooksIcon>
-                </Link>
+                <LibraryBooksIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></LibraryBooksIcon>
             );
         case 'Listas':
             return (
-                <Link title={category} href={category}>
-                    <LibraryBooksIcon className={classes.link} style={{ fontSize: sizeIcon }}></LibraryBooksIcon>
-                </Link>
+                <AcUnitIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></AcUnitIcon>
             );
         case 'Shounen':
             return (
-                <Link title={category} href={category}>
-                    <LibraryBooksIcon className={classes.link} style={{ fontSize: sizeIcon }}></LibraryBooksIcon>
-                </Link>
+                <CookieIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></CookieIcon>
             );
         default:
             throw new Error();
     };
 };
 
-export default Categories;
+
+export { Categories };
+export { HeaderCategories };
+

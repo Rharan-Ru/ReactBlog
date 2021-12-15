@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 
 
@@ -25,7 +24,7 @@ axiosInstance.interceptors.response.use(
 	},
 	async function (error) {
 		const originalRequest = error.config;
-
+		console.log(originalRequest.url);
 		if (typeof error.response === 'undefined') {
 			alert(
 				'A server/network error occurred. ' +
@@ -35,7 +34,7 @@ axiosInstance.interceptors.response.use(
 			return Promise.reject(error);
 		}
 
-		if (error.response.status === 401 && originalRequest.url === baseUrl + 'token/refresh/') 
+		if (error.response.status === 401 && String(originalRequest.url).includes('token/refresh/')) 
         {
 			window.location.href = '/login/';
 			return Promise.reject(error);

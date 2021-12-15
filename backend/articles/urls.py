@@ -1,20 +1,25 @@
 from django.urls import path
 from .views import (
-AdminDetailsView, ArticlesView, 
-ArticleDetailView, PopularWeekArticlesView, 
+AdminDeleteView, AdminDetailsView, ArticlesView, 
+ArticleDetailView, CategoriesView, PopularWeekArticlesView, 
 ArticlePostView, PopularArticlesView, 
-AdminPageView, AdminUpdateView)
+AdminPageView, AdminUpdateView,
+AdminDeleteView, AdminPublishedView,
+CategoriesView)
 
 
 urlpatterns = [
     path('', ArticlesView.as_view(), name='articles'),
     
     path('admin/', AdminPageView.as_view(), name='admin-page-view'),
-    path('admin/update/', AdminUpdateView.as_view(), name='admin-update-view'),
+    path('admin/published/<str:slug>', AdminPublishedView.as_view(), name='admin-published-view'),
+    path('admin/delete/<str:slug>', AdminDeleteView.as_view(), name='admin-delete-view'),
+    path('admin/update/<str:slug>', AdminUpdateView.as_view(), name='admin-update-view'),
     path('admin-details/<str:slug>', AdminDetailsView.as_view(), name='admin-article-detail'),
 
     path('week/', PopularWeekArticlesView.as_view(), name='popular-articles-week'),
     path('popular/', PopularArticlesView.as_view(), name='popular-articles'),
+    path('category/<str:category>/<int:index>', CategoriesView.as_view(), name='category-articles'),
 
     path('create/', ArticlePostView.as_view(), name='create-post'),
 

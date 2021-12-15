@@ -17,6 +17,7 @@ import Select from '@material-ui/core/Select';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import CardMedia from '@material-ui/core/CardMedia';
 
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
@@ -67,6 +68,8 @@ export default function Create() {
 		content: '',
 	});
 
+	const [previewData, setPreview] = useState(null);
+
 	const [postData, updateFormData] = useState(initialFormData);
 	const [postDataContent, updateDataContent] = useState(initialFormDataContent);
 	const [postimage, setPostImage] = useState(null);
@@ -77,7 +80,7 @@ export default function Create() {
 			setPostImage({
 				image: e.target.files,
 			});
-			console.log(e.target.files);
+			setPreview(URL.createObjectURL(e.target.files[0]));
 		}
 		else {
 			updateFormData({
@@ -154,7 +157,7 @@ export default function Create() {
 								required
 							/>
 						</Grid>
-						<Grid item xs={6} >
+						<Grid item lg={6} md={6} sm={12} style={{ width: '100%' }}>
 							<InputLabel id="demo-multiple-checkbox-label">Categories</InputLabel>
 							<Select
 								labelId="demo-multiple-checkbox-label"
@@ -174,23 +177,26 @@ export default function Create() {
 								))}
 							</Select>
 						</Grid>
-						<Grid item xs={6} >
-							<input
-								accept="image/*"
-								className={classes.input}
-								id="post-image"
-								onChange={handleChange}
-								multiple
-								name="image"
-								type="file"
-								style={{display: 'none'}}
-							/>
-							<label htmlFor="post-image">
-								<Button variant="raised" component="span" style={{width: '100%', height: '100%', backgroundColor: 'gray'}}>
-									<PhotoCamera />
-								</Button>
-							</label>
-							
+						<Grid item lg={6} md={6} sm={12} style={{width: '100%'}}>
+							<Grid item xs={12} style={{ width: '100%', overflow: 'visible' }}>
+								<CardMedia
+									component="img"
+									image={previewData}
+									style={{ width: '100%', height: '40vh', objectFit: 'contain' }}
+								/>
+							</Grid>
+							<Grid item xs={12} style={{ width: '100%', height: '100%'}} >
+								<input
+									accept="image/*"
+									className={classes.input}
+									id="post-image"
+									onChange={handleChange}
+									multiple
+									name="image"
+									type="file"
+									style={{width: '100%'}}
+								/>
+							</Grid>
 						</Grid>
 					</Grid>
 					<Button

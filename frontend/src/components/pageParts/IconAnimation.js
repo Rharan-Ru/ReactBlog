@@ -4,6 +4,8 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 import { makeStyles } from "@material-ui/core/styles";
 
+import useSound from 'use-sound';
+import audio from '../audios/Bubble.wav';
 
 const useStyles = makeStyles((theme) => ({
     contIcons: {
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '50%',
         backgroundColor: '#000000',
         '&:hover': {
-            transition: '0s',
+            transition: '500ms',
             color: '#55D0E0',
             animation: '$upIcon 1.5s ease-in-out infinite',
             // filter: 'drop-shadow(0 0 .5rem #55D0E0)'
@@ -46,13 +48,15 @@ const useStyles = makeStyles((theme) => ({
 
 const IconAnimation = () => {
     const classes = useStyles();
+    const [playbackRate, setPlaybackRate] = React.useState(3);
+    const [play] = useSound(audio, {interrupt: true,});
 
     return (
         <div className={classes.contIcons}>
             <ul style={{textAlign: 'center', overflowX: 'auto', overflowY: 'hidden', padding: '0px', margin: '0px', whiteSpace: 'nowrap', width: '100%', padding: '10px'}}>
                 {[...Array(10)].map((x, i) => 
                     <li style={{display: 'inline-block'}} key={i}>
-                        <AutoAwesomeIcon className={classes.icon}  style={{fontSize: '55px', padding:'10px', margin: '0 5px 0 5px'}} />
+                        <AutoAwesomeIcon className={classes.icon}  style={{fontSize: '55px', padding:'10px', margin: '0 5px 0 5px'}} onMouseEnter={() => play()} />
                         <p style={{margin: '0px'}}>teste</p>
                     </li>
                 )}
