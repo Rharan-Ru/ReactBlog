@@ -1,8 +1,8 @@
 import React from 'react';
 
 // Custom Components
-import CustomCardPerfil from './components/Perfil/CustomCardPerfil';
-import CustomPostCard from './components/Perfil/CustomCardPost';
+import CustomCardPerfil from './components/CustomCardPerfil';
+import CustomPostCard from './components/CustomCardPost';
 
 // Material Ui Components
 import { Box, Typography, Switch } from "@material-ui/core/";
@@ -27,13 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PerfilAdmin = ({ list }) => {
     const classes = useStyles();
-    const [listStatus, setListStatus] = React.useState(list.filter(item => item.status === 'published'))
-    const [checked, setChecked] = React.useState(true);
-
-    const handleChangeStatus = (event) => {
-        setChecked(event.target.checked);
-        {event.target.checked ? setListStatus(list.filter(item => item.status === 'published')) : setListStatus(list.filter(item => item.status !== 'published'))};
-    };
+    const [listStatus, setListStatus] = React.useState(list)
 
     return (
         <React.Fragment>
@@ -47,18 +41,13 @@ const PerfilAdmin = ({ list }) => {
                 }}>
                     {matches => (
                         <React.Fragment>
-                            {matches.small && <CustomCardPerfil name={'Monke'} admin={true} image={'https://source.unsplash.com/random/'} wid={'100%'} />}
-                            {matches.medium && <CustomCardPerfil name={'Monke'} admin={true} image={'https://source.unsplash.com/random/'} wid={'100%'} />}
-                            {matches.large && <CustomCardPerfil name={'Monke'} admin={true} image={'https://source.unsplash.com/random/'} wid={'30%'} />}
+                            {matches.small && <CustomCardPerfil name={'Monke'} admin={true} image={'/media/img_profile/f0afcbce7ed4a7df7b822964501bf995_VkTGrCm.jpg'} wid={'100%'} />}
+                            {matches.medium && <CustomCardPerfil name={'Monke'} admin={true} image={'/media/img_profile/f0afcbce7ed4a7df7b822964501bf995_VkTGrCm.jpg'} wid={'100%'} />}
+                            {matches.large && <CustomCardPerfil name={'Monke'} admin={true} image={'/media/img_profile/f0afcbce7ed4a7df7b822964501bf995_VkTGrCm.jpg'} wid={'30%'} />}
                         </React.Fragment>
                     )}
                 </Media>
-                <Switch
-                    checked={checked}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                    onChange={handleChangeStatus}
-                />
-                {checked ? <span>All published status</span> : <span>All draft status</span>}
+                
                 <Media queries={{
                     small: "(max-width: 599px)",
                     medium: "(min-width: 600px) and (max-width: 899px)",
@@ -68,18 +57,18 @@ const PerfilAdmin = ({ list }) => {
                         <React.Fragment>
                             {matches.small &&
                                 <div style={{ float: 'left', width: '100%' }}>
-                                    {listStatus.map(item => <CustomPostCard item={item} key={item.id} isAdmin={true} />)}
+                                    {list.map(item => <CustomPostCard item={item} key={item.id} isAdmin={true} />)}
                                 </div>}
 
                             {matches.medium &&
                                 <div style={{ float: 'left', width: '100%' }}>
-                                    {listStatus.map(item => <CustomPostCard item={item} key={item.id} isAdmin={true} />)}
+                                    {list.map(item => <CustomPostCard item={item} key={item.id} isAdmin={true} />)}
                                 </div>}
 
                             {matches.large &&
-                                <div style={{ float: 'left', width: '70%' }}>
+                                <div style={{ float: 'left', width: '70%', }}>
                                     <Typography variant='h5'>Admin Page - Lasts Posts</Typography>
-                                    {listStatus.map(item => <CustomPostCard item={item} key={item.id} isAdmin={true} />)}
+                                    {list.map(item => <CustomPostCard item={item} key={item.id} isAdmin={true} />)}
                                 </div>}
                         </React.Fragment>
                     )}

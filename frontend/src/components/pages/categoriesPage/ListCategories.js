@@ -1,9 +1,10 @@
 import React from "react";
-import Side from '../pageParts/Side';
-import { Categories } from "../utils/Categories";
+import Side from '../../globals/Side';
+import { Categories } from "../../utils/Categories";
 
-import axiosInstance from '../../axios';
-import parseHtmlContent from '../utils/ParseHtmlContent';
+import axiosInstance from '../../../axios';
+import parseHtmlContent from '../../utils/ParseHtmlContent';
+
 import { useParams } from 'react-router-dom';
 
 import Card from "@material-ui/core/Card";
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     },
     customCard: {
         background: 'none',
-        height: '27vh',
+        minHeight: '27vh',
         width: '100%',
         boxShadow: "none",
         marginBottom: '10px',
@@ -98,18 +99,18 @@ const ListCategories = ({ }) => {
             <Container>
                 <h1>Listando categoria {str2}</h1>
                 <Grid container spacing={1} style={{ width: '100%' }}>
-                    <Grid item xs={8}>
+                    <Grid item lg={8} md={8} sm={12}>
                         <InfiniteScroll
                             dataLength={data.posts.length}
                             next={FetchMoreData}
                             hasMore={hasMore}
                             loader={<h4>Loading...</h4>}
-                            style={{overflow: 'visible',}}
+                            style={{ overflow: 'visible', }}
                         >
                             {data.posts.map(item => <CustomCard item={item} />)}
                         </InfiniteScroll>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item lg={4} md={4} sm={12}>
                         <Side />
                     </Grid>
                 </Grid>
@@ -126,15 +127,15 @@ const CustomCard = ({ item }) => {
             <Card className={classes.customCard}>
                 <CardActionArea style={{ display: 'flex', overflow: 'visible' }}>
                     <Categories list={item.category_name} />
-                    <Grid container style={{ overflow: 'visible', height: '27vh', width: '100%' }} >
-                        <Grid item xs={5} style={{ width: '100%', overflow: 'visible' }} >
+                    <Grid container style={{ overflow: 'visible', minHeight: '27vh', width: '100%' }} >
+                        <Grid item lg={5} md={5} sm={12} style={{ width: '100%', overflow: 'visible' }} >
                             <CardMedia
                                 className={classes.cardImage}
                                 component="img"
                                 image={'http://127.0.0.1:8000' + item.image}
                             />
                         </Grid>
-                        <Grid item xs={7} style={{ width: '100%', height: '100%', overflow: 'visible', }} >
+                        <Grid item lg={7} md={7} sm={12} style={{ width: '100%', height: '100%', overflow: 'visible', }} >
                             <Box className={classes.textBox}>
                                 <Typography variant='h5' >{item.title}</Typography>
                                 <Typography variant='body2' className={classes.truncate} >{parseHtmlContent(item.content)}</Typography>

@@ -1,19 +1,20 @@
 import React from "react";
 import { HeaderCategories } from "../utils/Categories";
 
-import AppBar from '@material-ui/core/AppBar';
-import Typography from "@material-ui/core/Typography";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Link from "@material-ui/core/Link";
-import Tooltip from "@material-ui/core/Tooltip";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Button from "@material-ui/core/Button";
+import {
+    Divider, Drawer, Button, MenuItem, Menu,
+    Tooltip, Link, CssBaseline, Typography, AppBar
+} from "@material-ui/core";
 
 // import SearchBar from "material-ui-search-bar";
 // import ToolBar from '@material-ui/core/Toolbar';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import CreateIcon from '@mui/icons-material/Create';
+
+import chapeu from '../../chapeu.png';
 
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink } from 'react-router-dom';
@@ -26,12 +27,15 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'row',
-        backgroundColor: '#312e2e',
+        backgroundColor: '#2d1238',
         height: '60px',
     },
 
     site_name: {
-        padding: theme.spacing(3),
+        padding: theme.spacing(1),
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 
     link: {
@@ -51,36 +55,50 @@ const useStyles = makeStyles((theme) => ({
             },
         },
     },
-
+    link2: {
+        padding: theme.spacing(2),
+        color: 'white',
+        transition: '500ms',
+        height: '7vh',
+        alignItems: 'center',
+        display: 'flex',
+        minWidth: '55vh',
+        '&:hover': {
+            backgroundColor: "#e10735",
+            transition: '500ms',
+            '& svg': {
+                color: '#55D0E0',
+                transition: '500ms',
+            },
+        },
+    },
     right: {
         marginLeft: 'auto',
         marginRight: '0px',
         display: 'flex',
         alignItems: 'center',
-        padding: theme.spacing(2),
+        padding: theme.spacing(1),
         color: 'white',
-    }
+    },
+    drawer: {
+        backgroundColor: '#3f51b5',
+        background: "url('https://i0.wp.com/www.toppapeldeparede.com.br/wp-content/uploads/2021/02/anime-4k.png?resize=576%2C1024&ssl=1'), linear-gradient(#000000, #f88296)",
+        backgroundSize: 'cover',
+        backgroundBlendMode: 'multiply',
+    },
 }));
 
 
 
 const Header = () => {
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [anchor, setAnchor] = React.useState(null);
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
+    const handleClose = () => {
+        setAnchor(null);
     };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
+    const handleOpenMenu = (event) => {
+        setAnchor(event.currentTarget);
     };
 
     const classes = useStyles();
@@ -97,13 +115,14 @@ const Header = () => {
 
     const [logged, setLogged] = React.useState({ log: null });
     const access_token = localStorage.getItem('access_token');
-    
+    const [name, setName] = React.useState('')
+
     React.useEffect(() => {
         if (access_token) {
             const token = JSON.parse(atob(access_token.split('.')[1]));
             const now = Math.ceil(Date.now() / 1000);
             token.exp > now ? setLogged({ log: true }) : setLogged({ log: false });
-            console.log(now);
+            setName(token.name);
         }
         else {
             setLogged({ log: false });
@@ -111,56 +130,77 @@ const Header = () => {
     }, [access_token]);
 
     const categories = ['Anime', 'Manga', 'Listas', 'Shounen', 'Geral']
+    const uses = ['Privacy', 'Terms-of-Use', 'About', 'Contact']
+
+    // For Drawer
+    const [state, setState] = React.useState({ left: false, });
+
+    const toggleDrawer = (anchor, open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+
+        setState({ ...state, [anchor]: open });
+    };
     return (
         <React.Fragment>
-            <CssBaseline />
             <AppBar position='static' color='default' elevation={0} className={classes.appBar}>
+                <CssBaseline />
+                <div style={{ borderRight: '1px solid white' }}>
+                    <Button onClick={toggleDrawer('left', true)}><MenuIcon style={{ color: 'white' }} /></Button>
+                    <Drawer
+                        anchor={'left'}
+                        open={state['left']}
+                        onClose={toggleDrawer('left', false)}
+                        style={{ width: '100%' }}
+                        classes={{ paper: classes.drawer }}
+                    >
+                        <Button onClick={toggleDrawer('left', false)} style={{ color: 'white', width: '10px', margin: '10px', backgroundColor: '#e10735' }}><CloseIcon style={{ fontSize: '20px' }} /></Button>
+                        <Button href='#' className={classes.link2} style={{borderRadius: '0px'}} variant='outlined' component={NavLink} to='/create'>
+                            <CreateIcon /> Create Post <CreateIcon />
+                        </Button>
+                        <Divider style={{ backgroundColor: 'white', margin: '10px' }} />
+                        <HeaderCategories list={categories} classes={classes.link2} />
+                        <Divider style={{ backgroundColor: 'white', margin: '10px' }} />
+                        <HeaderCategories list={uses} classes={classes.link2} />
+                    </Drawer>
+                </div>
                 <Typography variant='h6' noWrap>
                     <Link className={classes.site_name} component={NavLink} to='/' underline='none' style={{ color: 'white' }}>
-                        Mangá Brasil
+                        <img src={chapeu} alt="Logo" width={60} />Mangá Brasil
                     </Link>
                 </Typography>
-                <Media query="(min-width: 899px)" render={() =>
-                (
-                    <HeaderCategories list={categories} classes={classes.link} />
-                )}
-                />
-                {/* <Media query="(min-width: 599px)">
-                    {matches => (
-                        <div style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                            {categories.map((category) => (
-                                <Link className={classes.link} underline='none' component={NavLink} to='animes/'>
-                                    < AutoAwesomeIcon className={classes.icons} fontSize="small" /> {category}
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-                </Media> */}
 
                 <div className={classes.right}>
-                    <Button href='#' color='primary' style={{ height: '100%', marginRight: '10px', color: 'white', padding: '10px' }} variant='outlined' component={NavLink} to='/create'>Create Post</Button>
-                    <Tooltip onClick={handleOpenUserMenu} style={{ cursor: 'pointer' }} title="Open settings">
+
+                    <Tooltip onClick={handleOpenMenu} style={{ cursor: 'pointer' }} title="Open settings">
                         <AccountCircleIcon style={{ fontSize: "30px", cursor: 'pointer' }} />
                     </Tooltip>
                     <Menu
                         id="menu-appbar"
                         style={{ marginTop: '40px' }}
-                        anchorEl={anchorElUser}
+                        anchorEl={anchor}
                         keepMounted
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
+                        open={Boolean(anchor)}
+                        onClose={handleClose}
                     >
                         {logged.log ?
-                            <Link style={{ color: 'black' }} underline='none' component={NavLink} to='logout/' >
-                                <MenuItem key={'logout'} onClick={handleCloseNavMenu}>Logout</MenuItem>
-                            </Link>
+                            <div>
+                                <Link style={{ color: 'black' }} underline='none' component={NavLink} to={'perfils/' + name} >
+                                    <MenuItem key={'perfil'} onClick={handleClose}>Perfil</MenuItem>
+                                </Link>
+                                <Link style={{ color: 'black' }} underline='none' component={NavLink} to='logout/' >
+                                    <MenuItem key={'logout'} onClick={handleClose}>Logout</MenuItem>
+                                </Link>
+
+                            </div>
                             :
                             <div>
                                 <Link style={{ color: 'black' }} underline='none' component={NavLink} to='login/' >
-                                    <MenuItem key={'login'} onClick={handleCloseNavMenu}>Login</MenuItem>
+                                    <MenuItem key={'login'} onClick={handleClose}>Login</MenuItem>
                                 </Link>
                                 <Link style={{ color: 'black' }} underline='none' component={NavLink} to='register/' >
-                                    <MenuItem key={'register'} onClick={handleCloseNavMenu}>Register</MenuItem>
+                                    <MenuItem key={'register'} onClick={handleClose}>Register</MenuItem>
                                 </Link>
                             </div>
                         }

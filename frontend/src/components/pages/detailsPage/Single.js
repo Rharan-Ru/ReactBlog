@@ -1,12 +1,12 @@
 import React from 'react';
 
 // Custom axios and librarys
-import axiosInstance from '../../axios';
+import axiosInstance from '../../../axios';
 import { useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 
 // My components
-import Side from './Side';
+import Side from '../../globals/Side';
 
 //MaterialUI
 import { makeStyles } from '@material-ui/core';
@@ -40,21 +40,20 @@ const Single = () => {
 	}, [setData, slug]);
 
 	return (
-		<Container style={{marginTop: '24px'}}>
-			<Grid container spacing={1} style={{ width: '100%' }}>
-				<Grid item md={8} style={{ width: '100%' }}>
+		<Container style={{ marginTop: '24px', }}>
+			<Grid container spacing={2}>
+				<Grid item md={8} style={{ width: '100%',}}>
 					<Typography
-						component="h3"
-						variant="h2"
+						component="h4"
+						variant="h3"
 						color="textPrimary"
-						style={{ borderTop: '3px solid black' }}
 					>
 						{data.post.title}
-						<Card style={{backgroundColor: "none", boxShadow: 'none'}}>
+						<Card style={{ backgroundColor: "none", boxShadow: 'none' }}>
 							<CardMedia
 								component="img"
 								image={'http://127.0.0.1:8000' + data.post.image}
-								style={{maxHeight: '60vh', objectFit: 'contain'}}
+								style={{ maxHeight: '60vh', objectFit: 'contain' }}
 							/>
 						</Card>
 					</Typography>

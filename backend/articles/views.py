@@ -5,7 +5,7 @@ from django.utils.safestring import SafeString
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly, SAFE_METHODS, BasePermission
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from .serializers import ArticleSerializer
@@ -17,6 +17,7 @@ from django.utils import timezone
 import bleach
 
 
+# This fuction get visitor ip address to count articles views
 def get_ip_address(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -25,6 +26,21 @@ def get_ip_address(request):
         ip = request.META.get('REMOTE_ADDR')
     ip = IpAddress.objects.get(ip_address=ip)
     return ip
+
+
+# Permission that verify if request user is article author or not
+class PostUserWritePermission(BasePermission):
+    message = 'Editing posts is restricted to the author only.'
+    
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return True
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        return obj.author == request.user
 
 
 BLEACH_TAGS = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul', 'p', 'br', 'img', 's', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
@@ -42,7 +58,7 @@ class ArticlesView(APIView):
  
         todos = articles.all().count()
 
-        paginator = Paginator(articles[4:], 5)
+        paginator = Paginator(articles[4:], 8)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         serializer = ArticleSerializer(page_obj, many=True)
@@ -92,7 +108,7 @@ class CategoriesView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class ArticleDetailView(APIView):
+class ArticleDetailView(APIView, PostUserWritePermission):
     permission_classes = [IsAuthenticatedOrReadOnly]
     def get(self, request, slug, format=None):
 
@@ -118,6 +134,8 @@ class ArticlePostView(APIView):
             styles= BLEACH_STYLES, protocols= BLEACH_PROTOCOLS,
             strip=False, 
             strip_comments=True)
+            print(text)
+            print(content)
             Article.objects.create(
                 title = request.data['title'],
                 slug = slugify(request.data['title'], allow_unicode=True),
@@ -137,11 +155,72 @@ class ArticlePostView(APIView):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 
+class UserDetailsUpdateView(APIView, PostUserWritePermission):
+    permission_classes = [PostUserWritePermission]
+    def get(self, request, slug, format=None):
+        article = Article.objects.get(slug=slug)
+        if article.author != request.user:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if not Article.objects.filter(slug=slug).exists():
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        ip = get_ip_address(request)
+        if not ip in article.views.all():
+            article.views.add(ip)
+
+        serializer = ArticleSerializer(article)
+        return Response(serializer.data)
+
+
+class UserUpdateView(APIView, PostUserWritePermission):
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [PostUserWritePermission]
+    def post(self, request, slug, format=None):
+        article = Article.objects.get(slug=slug)
+        if article.author != request.user:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        else: 
+            try:
+                print(request.data['categories'])
+                text = request.data['content']
+                content = bleach.clean(text, tags= BLEACH_TAGS, attributes= BLEACH_ATTRIBUTES, 
+                styles= BLEACH_STYLES, protocols= BLEACH_PROTOCOLS,
+                strip=False, 
+                strip_comments=True)
+
+                article = Article.objects.get(slug=slug)
+                article.title = request.data['title']
+                article.slug = slugify(request.data['title'], allow_unicode=True)
+                article.content = content
+
+                if 'media' not in request.data['image']:
+                    article.image = request.data['image']
+
+                article.category.clear()
+                article.save()
+
+                if len(request.data['categories']) > 0:
+                    for categ in request.data['categories'].split(','):
+                        category= Category.objects.get(name = categ)
+                        article.category.add(category)
+                        article.save()
+                else:
+                    category= Category.objects.get(name = 'Geral')
+                    article.category.add(category)
+                    article.save()
+                return Response(status = status.HTTP_200_OK)
+            except Exception as erro:
+                print(erro)
+                return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
 # Views for Admin user only
 class AdminPageView(APIView):
     permission_classes = [IsAdminUser]
     def get(self, request, format=None):
-        articles = Article.objects.all().order_by('-published_date')
+        articles = Article.objects.all()
+ 
         todos = articles.all().count()
 
         paginator = Paginator(articles, 10)

@@ -1,10 +1,10 @@
 import React from 'react';
 import axiosInstance from './axios';
 
-import Posts from './components/pageParts/Posts';
-import Principal from './components/pageParts/Principal';
-import Side from './components/pageParts/Side';
-import IconAnimation from './components/pageParts/IconAnimation';
+import Posts from './components/pages/homePage/Posts';
+import Principal from './components/pages/homePage/Principal';
+import Side from './components/globals/Side';
+import IconAnimation from './components/pages/homePage/IconAnimation';
 
 import Grid from "@material-ui/core/Grid";
 import Pagination from '@mui/material/Pagination';
@@ -57,7 +57,7 @@ const App = () => {
         };
         fetchData();
     }, [page]);
-    const perPage = 5;
+    const perPage = 8;
     return (
         <React.Fragment>
             {/* <Media queries={{
@@ -76,7 +76,7 @@ const App = () => {
                 {stories.lasts.length === 0 ? <h4 align='center'> No posts yet... </h4> : <Principal items={stories.lasts.slice(0, 5)} />}
                 {stories.isLoading ? <h2 align='center' > Waiting for posts </h2> :
                     <React.Fragment>
-                        <Grid container spacing={1}>
+                        <Grid container spacing={1} style={{alignItems: 'flex-start',}}>
                             <Grid container spacing={1} item md={8}>
                                 <Posts list={stories.data} />
                             </Grid>

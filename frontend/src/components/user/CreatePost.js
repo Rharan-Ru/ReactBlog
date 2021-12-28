@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import axiosInstance from '../../axios';
 import { useNavigate } from 'react-router-dom';
+import Side from '../globals/Side';
 
 //MaterialUI
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -19,8 +19,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import CardMedia from '@material-ui/core/CardMedia';
 
-import IconButton from '@material-ui/core/IconButton';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -28,10 +26,12 @@ import 'react-quill/dist/quill.snow.css';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
-		marginTop: theme.spacing(8),
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center',
+		backgroundColor: 'rgb(0 0 0 / 5%)',
+        borderRadius: '10px',
+		padding: '10px',
 	},
 	avatar: {
 		margin: theme.spacing(1),
@@ -44,18 +44,25 @@ const useStyles = makeStyles((theme) => ({
 	submit: {
 		margin: theme.spacing(3, 0, 2),
 	},
+	titleHeader: {
+        height: '10vh',
+        padding: '4px',
+        margin: '0',
+        display: 'flex',
+        alignItems: 'center',
+    },
 }));
 
 const names = [
-	'General',
+	'Geral',
 	'Anime',
 	'Manga',
-	'Shounem',
+	'Shounen',
 	'Listas',
 ];
 
 
-export default function Create() {
+const CreatePost = () => {
 	const classes = useStyles();
 
 	const history = useNavigate();
@@ -126,91 +133,109 @@ export default function Create() {
 	};
 
 	return (
-		<Container component="main">
-			<CssBaseline />
-			<div className={classes.paper}>
-				<Typography component="h1" variant="h5">
-					Create New Post
-				</Typography>
-				<form className={classes.form} noValidate>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								id="title"
-								label="Post Title"
-								name="title"
-								autoComplete="title"
+		<div className={classes.paper}>
+			<Typography className={classes.titleHeader} align='center' gutterBottom variant="h5" component="div">
+                Crie algo novo!
+            </Typography>
+			<form className={classes.form} noValidate>
+				<Grid container spacing={2}>
+					<Grid item xs={12}>
+						<TextField
+							variant="outlined"
+							required
+							fullWidth
+							id="title"
+							label="Post Title"
+							name="title"
+							autoComplete="title"
+							onChange={handleChange}
+							style={{ color: 'white'}}
+						/>
+					</Grid>
+					<Grid item xs={12} style={{ height: '100%' }}>
+						<ReactQuill
+							theme='snow'
+							value={postDataContent}
+							onChange={(value) => updateDataContent(value)}
+							modules={modules}
+							// formats={formats}
+							style={{ height: '100%', border: '1px solid black', }}
+							height={400}
+							required
+						/>
+					</Grid>
+					<Grid item lg={12} md={12} sm={12} style={{ width: '100%' }}>
+						<InputLabel id="demo-multiple-checkbox-label">Categories</InputLabel>
+						<Select
+							labelId="demo-multiple-checkbox-label"
+							id="categories"
+							multiple
+							value={personName}
+							onChange={handleChangeCategories}
+							input={<OutlinedInput label="Tag" />}
+							renderValue={(selected) => selected.join(', ')}
+							style={{ width: '100%' }}
+						>
+							{names.map((name) => (
+								<MenuItem key={name} value={name}>
+									<Checkbox checked={personName.indexOf(name) > -1} />
+									<ListItemText primary={name} />
+								</MenuItem>
+							))}
+						</Select>
+					</Grid>
+					<Grid item lg={12} md={12} sm={12} style={{ width: '100%' }}>
+						<Grid item xs={12} style={{ width: '100%', overflow: 'visible' }}>
+							<CardMedia
+								component="img"
+								image={previewData}
+								style={{ width: '100%', height: '40vh', objectFit: 'contain' }}
+							/>
+						</Grid>
+						<Grid item xs={12} style={{ width: '100%', height: '100%' }} >
+							<input
+								accept="image/*"
+								className={classes.input}
+								id="post-image"
 								onChange={handleChange}
-							/>
-						</Grid>
-						<Grid item xs={12} style={{ height: '560px' }}>
-							<ReactQuill
-								theme='snow'
-								value={postDataContent}
-								onChange={(value) => updateDataContent(value)}
-								modules={modules}
-								// formats={formats}
-								style={{ height: '460px' }}
-								required
-							/>
-						</Grid>
-						<Grid item lg={6} md={6} sm={12} style={{ width: '100%' }}>
-							<InputLabel id="demo-multiple-checkbox-label">Categories</InputLabel>
-							<Select
-								labelId="demo-multiple-checkbox-label"
-								id="categories"
 								multiple
-								value={personName}
-								onChange={handleChangeCategories}
-								input={<OutlinedInput label="Tag" />}
-								renderValue={(selected) => selected.join(', ')}
+								name="image"
+								type="file"
 								style={{ width: '100%' }}
-							>
-								{names.map((name) => (
-									<MenuItem key={name} value={name}>
-										<Checkbox checked={personName.indexOf(name) > -1} />
-										<ListItemText primary={name} />
-									</MenuItem>
-								))}
-							</Select>
-						</Grid>
-						<Grid item lg={6} md={6} sm={12} style={{width: '100%'}}>
-							<Grid item xs={12} style={{ width: '100%', overflow: 'visible' }}>
-								<CardMedia
-									component="img"
-									image={previewData}
-									style={{ width: '100%', height: '40vh', objectFit: 'contain' }}
-								/>
-							</Grid>
-							<Grid item xs={12} style={{ width: '100%', height: '100%'}} >
-								<input
-									accept="image/*"
-									className={classes.input}
-									id="post-image"
-									onChange={handleChange}
-									multiple
-									name="image"
-									type="file"
-									style={{width: '100%'}}
-								/>
-							</Grid>
+							/>
 						</Grid>
 					</Grid>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-						onClick={handleSubmit}
-					>
-						Create Post
-					</Button>
-				</form>
-			</div>
-		</Container>
+				</Grid>
+				<Button
+					type="submit"
+					fullWidth
+					variant="contained"
+					color="primary"
+					className={classes.submit}
+					onClick={handleSubmit}
+				>
+					Create Post
+				</Button>
+			</form>
+		</div>
 	);
 }
+
+const Create = () => {
+	return (
+		<React.Fragment>
+			<Container style={{ marginTop: '24px' }}>
+				<Grid container spacing={2}>
+					<Grid item lg={8} md={8} sm={12} style={{width: '100%'}}>
+						<CreatePost />
+					</Grid>
+					<Grid item lg={4} md={4} sm={12} style={{width: '100%'}}>
+						<Side />
+					</Grid>
+				</Grid>
+			</Container>
+		</React.Fragment>
+	);
+};
+
+export default Create;

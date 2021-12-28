@@ -42,7 +42,7 @@ const AdminPage = () => {
         };
         fetchData();
     }, [page]);
-    const perPage = 5;
+    const perPage = 10;
     return (
         <React.Fragment>
             <Container style={{ padding: '0px', margin: '0px' }}>

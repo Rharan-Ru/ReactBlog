@@ -1,6 +1,6 @@
 import React from 'react';
-import {Categories} from '../utils/Categories';
-import ParseHtml from '../utils/ParseHtmlContent';
+import {Categories} from '../../utils/Categories';
+import ParseHtml from '../../utils/ParseHtmlContent';
 
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         color: 'white',
         padding: '10px',
         transition: '500ms',
-        borderRadius: '10px',
+        borderRadius: '0 0 10px 10px',
     },
     truncate: {
         display: "-webkit-box",
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
                 transition: '500ms',
             },
         },
-    }
+    },
 }));
 
 
@@ -75,7 +75,7 @@ const Principal = ({ items }) => {
 const CustomCard = ({ item, heightCustom }) => {
     const classes = useStyles();
     return (
-        <Card style={{ height: heightCustom, width: '100%' }} className={classes.customCard}>
+        <Card style={{ height: heightCustom, width: '100%', borderRadius: '10px' }} className={classes.customCard}>
             <CardActionArea>
                 <Categories list={item.category_name} />
                 <Link href={'post/' + item.slug} color='textPrimary' underline='none'>

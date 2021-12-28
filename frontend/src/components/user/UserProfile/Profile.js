@@ -3,8 +3,8 @@ import axiosInstance from '../../../axios';
 import { useParams } from 'react-router-dom';
 
 // Custom Components
-import CustomCardPerfil from '../../adminPage/components/Perfil/CustomCardPerfil';
-import CustomPostCard from '../../adminPage/components/Perfil/CustomCardPost';
+import CustomCardPerfil from '../../adminPage/components/CustomCardPerfil';
+import CustomPostCard from '../../adminPage/components/CustomCardPost';
 
 // Material Ui Components
 import { Box, Tab, Grid } from "@material-ui/core/";

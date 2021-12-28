@@ -55,7 +55,8 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     backgroundCard: {
-        background: "url('https://carbonmade-media.accelerator.net/30443284;640x266.jpeg') rgba(0, 0, 0, 0.8)",
+        backgroundColor: '#3f51b5',
+        background: "url('https://carbonmade-media.accelerator.net/30443284;640x266.jpeg'), linear-gradient(#000000, #f88296)",
         backgroundSize: 'contains',
         backgroundBlendMode: 'multiply',
         borderRadius: '10px 10px 10px 10px',
@@ -113,7 +114,7 @@ const Side = ({ list, popular }) => {
 const CustomCard = ({ item }) => {
     const classes = useStyles();
     const [playbackRate, setPlaybackRate] = React.useState(1);
-    const [play, { stop }] = useSound(audio5);
+    const [play, { stop }] = useSound(audio);
 
     return (
         <Link href={'http://localhost:3000/post/' + item.slug} color='textPrimary' underline='none'>

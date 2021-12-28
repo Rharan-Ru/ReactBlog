@@ -3,7 +3,7 @@ import { Card, CardMedia, Grid, Link, Box, Typography, CardActionArea } from "@m
 import { makeStyles } from "@material-ui/core";
 
 import BasicMenu from "./BasicMenu";
-import ParseHtml from "../../../utils/ParseHtmlContent";
+import ParseHtml from "../../utils/ParseHtmlContent";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -71,18 +71,19 @@ const CustomPostCard = ({ item, isAdmin }) => {
                 <BasicMenu slug={item.slug} isAdmin={isAdmin} isPub={item.status} />
             </div>}
             
-            <CardActionArea style={{ display: 'flex', overflow: 'visible' }}>
-                <Link href={item.slug} color='textPrimary' underline='none'>
-                    <Grid container style={{ overflow: 'visible', height: '12vh', width: '100%' }} >
+            <CardActionArea style={{overflow: 'visible' }}>
+                <Link href={'http://localhost:3000/post/' + item.slug} color='textPrimary' underline='none'>
+                    <Grid container style={{ overflow: 'visible', height: '12vh'}} >
                         <Grid item xs={3} style={{ width: '100%', overflow: 'visible' }}>
                             <CardMedia
                                 className={classes.cardImagePost}
                                 component="img"
                                 image={'http://127.0.0.1:8000' + item.image}
+                                style={{ width: '100%'}}
                             />
                         </Grid>
                         <Grid item xs={9} style={{ width: '100%', height: '100%', overflow: 'visible' }} >
-                            <Box className={classes.textBoxPost}>
+                            <Box className={classes.textBoxPost} style={{ width: '100%'}}>
                                 <Typography>{item.title}</Typography>
                                 <Typography variant="body2" className={classes.truncate}>{ParseHtml(item.content)}</Typography>
                             </Box>

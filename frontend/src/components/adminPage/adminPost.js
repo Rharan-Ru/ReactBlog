@@ -3,9 +3,6 @@ import axiosInstance from '../../axios';
 import { useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 
-//MaterialUI
-import CssBaseline from '@material-ui/core/CssBaseline';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';

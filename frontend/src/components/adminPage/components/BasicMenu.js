@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core";
 import { Button, Menu, Modal, Box, Typography } from "@material-ui/core";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
-import axiosInstance from "../../../../axios";
+import axiosInstance from "../../../axios";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
         margin: '5px',
         position: 'absolute',
         zIndex: '1',
-        backgroundColor: 'blue',
         '&:hover': {
             backgroundColor: 'white',
             color: 'black',
@@ -49,6 +48,30 @@ const BasicMenu = ({ slug, isAdmin, isPub }) => {
 
     return (
         <React.Fragment>
+            {isPub === 'published' ?
+                <Button
+                    id="basic-button"
+                    aria-controls="basic-menu"
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                    className={classes.linkButton}
+                    style={{backgroundColor: 'blue',}}
+                >
+                    <AutoAwesomeIcon />
+                </Button> :
+                <Button
+                    id="basic-button"
+                    aria-controls="basic-menu"
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                    className={classes.linkButton}
+                    style={{backgroundColor: 'red',}}
+                >
+                    <AutoAwesomeIcon />
+                </Button>
+            }
             <Button
                 id="basic-button"
                 aria-controls="basic-menu"
@@ -68,7 +91,7 @@ const BasicMenu = ({ slug, isAdmin, isPub }) => {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                {isAdmin ? <Button style={{ width: '100%' }} href={'http://localhost:3000/admin/update/' + slug}>Edit</Button> : <Button style={{ width: '100%' }} href={'http://localhost:3000/post/update/' + slug}>Edit</Button>}
+                {isAdmin ? <Button style={{ width: '100%' }} href={'http://localhost:3000/admin/update/' + slug}>Edit</Button> : <Button style={{ width: '100%' }} href={'http://localhost:3000/update/' + slug}>Edit</Button>}
                 <CustomModal slug={slug} type={'delete'} />
                 {isPub === 'draft' &&
                     <CustomModal slug={slug} type={'publish'} />
@@ -98,6 +121,7 @@ const CustomModal = ({ type, slug }) => {
 
         window.location.reload();
     };
+
     return (
         <React.Fragment>
             {

@@ -10,6 +10,10 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import CookieIcon from '@mui/icons-material/Cookie';
+import PolicyIcon from '@mui/icons-material/Policy';
+import GavelIcon from '@mui/icons-material/Gavel';
+import InfoIcon from '@mui/icons-material/Info';
+import ContactPageIcon from '@mui/icons-material/ContactPage';
 
 const useStyles = makeStyles((theme) => ({
     linkCustom: {
@@ -48,7 +52,7 @@ const HeaderCategories = ({ list, classes }) => {
             {list.map(item =>
                 <Link key={item} title={item} href={'http://localhost:3000/categoria/' + item.toLowerCase()} className={classes} underline='none'>
                     <Icons category={item} sizeIcon={'30px'} />
-                    <Typography variant='body2' style={{padding: '5px'}}>{item}</Typography>
+                    <Typography variant='body2' style={{ padding: '5px' }}>{item}</Typography>
                 </Link>
             )}
         </React.Fragment>
@@ -78,6 +82,22 @@ const Icons = ({ category, sizeIcon }) => {
         case 'Shounen':
             return (
                 <CookieIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></CookieIcon>
+            );
+        case 'Privacy':
+            return (
+                <PolicyIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></PolicyIcon>
+            );
+        case 'Terms-of-Use':
+            return (
+                <GavelIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></GavelIcon>
+            );
+        case 'About':
+            return (
+                <InfoIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></InfoIcon>
+            );
+        case 'Contact':
+            return (
+                <ContactPageIcon className={classes.linkCustom} style={{ fontSize: sizeIcon }}></ContactPageIcon>
             );
         default:
             throw new Error();
