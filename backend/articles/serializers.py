@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Article
 from users.models import User
 from django.utils.safestring import SafeString
-from bs4 import BeautifulSoup
+
 
 class ArticleSerializer(serializers.ModelSerializer):
     views = serializers.SerializerMethodField()
