@@ -4,6 +4,7 @@ from django.conf import settings
 from ckeditor.fields import RichTextField
 
 from users.models import IpAddress
+from PIL import Image
 # Create your models here.
 
 
@@ -36,5 +37,15 @@ class Article(models.Model):
 
     objects = models.Manager() # default manager
     postobjects = PostObject() # custom manager
+
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        img = Image.open(self.image.path)
+        if img.height > 600 or img.width > 600:
+            output_size = (600, 600)
+            img.image(output_size)
+            img.save(self.image.path, quality=80, optmize=True)
+

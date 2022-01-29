@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'ckeditor',
     'django_bleach',
+    'drf_yasg',
 
     'users', 
     'articles',
@@ -188,3 +189,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
+
+BLEACH_TAGS = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul', 'p', 'br', 'img', 's', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+BLEACH_ATTRIBUTES = {'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['alt', 'src', 'width', 'height'],}
+BLEACH_STYLES = []
+BLEACH_PROTOCOLS = ['http', 'https']

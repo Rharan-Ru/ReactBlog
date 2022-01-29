@@ -23,6 +23,13 @@ import CardMedia from '@material-ui/core/CardMedia';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+import { Quill } from 'react-quill';
+import ImageResize from 'quill-image-resize-module-react';
+import ImageCompress from 'quill-image-compress';
+
+Quill.register('modules/imageResize', ImageResize);
+Quill.register('modules/imageCompress', ImageCompress);
+
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -119,8 +126,20 @@ const CreatePost = () => {
 			[{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
 			['clean']
 		],
+		imageResize: {
+			parchment: Quill.import('parchment'),
+			handleStyles: {
+                backgroundColor: 'black',
+                border: 'none',
+                color: 'white',
+            },
+        },
+		imageCompress: {
+			quality: 0.7, // default
+			maxWidth: 800, // default
+			maxHeight: 600, // default
+		},
 	};
-
 
 	const handleChangeCategories = (event) => {
 		const {

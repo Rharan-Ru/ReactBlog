@@ -1,52 +1,22 @@
-from django.core.paginator import Paginator
-from django.utils.text import slugify
-from django.utils.safestring import SafeString
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly, SAFE_METHODS, BasePermission
 from rest_framework.parsers import MultiPartParser, FormParser
 
+from django.conf import settings
+from django.core.paginator import Paginator
+from django.utils.text import slugify
+from django.utils.safestring import SafeString
+from django.utils import timezone
+
+from .get_ip import get_ip_address
+from .permissions import PostUserWritePermission
 from .serializers import ArticleSerializer
 from .models import Article, Category
-from users.models import IpAddress
 
 from datetime import timedelta
-from django.utils import timezone
 import bleach
-
-
-# This fuction get visitor ip address to count articles views
-def get_ip_address(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[-1].strip()
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    ip = IpAddress.objects.get(ip_address=ip)
-    return ip
-
-
-# Permission that verify if request user is article author or not
-class PostUserWritePermission(BasePermission):
-    message = 'Editing posts is restricted to the author only.'
-    
-    def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            return True
-        return False
-
-    def has_object_permission(self, request, view, obj):
-        if request.method in SAFE_METHODS:
-            return True
-        return obj.author == request.user
-
-
-BLEACH_TAGS = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'strong', 'ul', 'p', 'br', 'img', 's', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-BLEACH_ATTRIBUTES = {'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['alt', 'src', 'width', 'height'],}
-BLEACH_STYLES = []
-BLEACH_PROTOCOLS = ['http', 'https']
 
 
 class ArticlesView(APIView):
@@ -84,19 +54,8 @@ class PopularArticlesView(APIView):
         return Response(serializer.data)
 
 
-class CategoriesView(APIView):
+class ArticlesByCategoriesView(APIView):
     def get(self, request, category, index, format=None):
-        # categoria = Category.objects.get(name='Geral')
-        # for x in range(30):
-        #     article = Article.objects.create(
-        #         title = f'teste00{x}',
-        #         slug = slugify(f'teste00{x}', allow_unicode=True),
-        #         content = 'teste de content',
-        #         author = request.user,
-        #     )
-        #     article.category.add(categoria)
-        #     article.save()
-
         index_f = (index * 5) - 5
         index_s = index * 5
         try:
@@ -130,8 +89,8 @@ class ArticlePostView(APIView):
     def post(self, request, format=None):
         try:
             text = request.data['content']
-            content = bleach.clean(text, tags= BLEACH_TAGS, attributes= BLEACH_ATTRIBUTES, 
-            styles= BLEACH_STYLES, protocols= BLEACH_PROTOCOLS,
+            content = bleach.clean(text, tags= settings.BLEACH_TAGS, attributes= settings.BLEACH_ATTRIBUTES, 
+            styles= settings.BLEACH_STYLES, protocols= settings.BLEACH_PROTOCOLS,
             strip=False, 
             strip_comments=True)
             print(text)
@@ -155,6 +114,7 @@ class ArticlePostView(APIView):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 
+# Send post details data to update data
 class UserDetailsUpdateView(APIView, PostUserWritePermission):
     permission_classes = [PostUserWritePermission]
     def get(self, request, slug, format=None):
@@ -184,8 +144,8 @@ class UserUpdateView(APIView, PostUserWritePermission):
             try:
                 print(request.data['categories'])
                 text = request.data['content']
-                content = bleach.clean(text, tags= BLEACH_TAGS, attributes= BLEACH_ATTRIBUTES, 
-                styles= BLEACH_STYLES, protocols= BLEACH_PROTOCOLS,
+                content = bleach.clean(text, tags= settings.BLEACH_TAGS, attributes= settings.BLEACH_ATTRIBUTES, 
+                styles= settings.BLEACH_STYLES, protocols= settings.BLEACH_PROTOCOLS,
                 strip=False, 
                 strip_comments=True)
 

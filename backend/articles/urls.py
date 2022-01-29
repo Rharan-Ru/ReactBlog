@@ -1,12 +1,11 @@
 from django.urls import path
 from .views import (
 AdminDeleteView, AdminDetailsView, ArticlesView, 
-ArticleDetailView, CategoriesView, PopularWeekArticlesView, 
+ArticleDetailView, ArticlesByCategoriesView, PopularWeekArticlesView, 
 ArticlePostView, PopularArticlesView, 
 AdminPageView, AdminUpdateView,
 AdminDeleteView, AdminPublishedView,
-CategoriesView, UserUpdateView,
-UserDetailsUpdateView)
+UserUpdateView, UserDetailsUpdateView)
 
 
 urlpatterns = [
@@ -20,7 +19,7 @@ urlpatterns = [
 
     path('week/', PopularWeekArticlesView.as_view(), name='popular-articles-week'),
     path('popular/', PopularArticlesView.as_view(), name='popular-articles'),
-    path('category/<str:category>/<int:index>', CategoriesView.as_view(), name='category-articles'),
+    path('category/<str:category>/<int:index>', ArticlesByCategoriesView.as_view(), name='category-articles'),
 
     path('create/', ArticlePostView.as_view(), name='create-post'),
     path('update/<str:slug>', UserUpdateView.as_view(), name='update-view'),
