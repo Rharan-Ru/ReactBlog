@@ -9,7 +9,7 @@ UserUpdateView, UserDetailsUpdateView)
 
 
 urlpatterns = [
-    path('', ArticlesView.as_view(), name='articles'),
+    path('', ArticlesView.as_view(), name='articles-view'),
     
     path('admin/', AdminPageView.as_view(), name='admin-page-view'),
     path('admin/published/<str:slug>', AdminPublishedView.as_view(), name='admin-published-view'),

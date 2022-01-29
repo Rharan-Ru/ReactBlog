@@ -33,7 +33,7 @@ class ArticlesView(APIView):
         page_obj = paginator.get_page(page_number)
         serializer = ArticleSerializer(page_obj, many=True)
 
-        return Response({'data': serializer.data, 'num_artigos': todos, 'lasts': lasts_serializer.data})
+        return Response({'data': serializer.data, 'num_artigos': todos, 'lasts': lasts_serializer.data}, status = status.HTTP_200_OK)
 
 
 class PopularWeekArticlesView(APIView):
@@ -93,21 +93,13 @@ class ArticlePostView(APIView):
             styles= settings.BLEACH_STYLES, protocols= settings.BLEACH_PROTOCOLS,
             strip=False, 
             strip_comments=True)
-            print(text)
-            print(content)
             Article.objects.create(
                 title = request.data['title'],
-                slug = slugify(request.data['title'], allow_unicode=True),
                 content = content,
                 image = request.data['image'],
                 author = request.user,
             )
-            article=Article.objects.get(title = request.data['title'])
-            for categ in request.data['categories'].split(','):
-                category=Category.objects.get(name = categ)
-                article.category.add(category)
-                article.save()
-
+            Article.save_categories(title=request.data['title'], categories=request.data['categories'])
             return Response(status = status.HTTP_200_OK)
         except Exception as erro:
             print(erro)
@@ -124,10 +116,6 @@ class UserDetailsUpdateView(APIView, PostUserWritePermission):
 
         if not Article.objects.filter(slug=slug).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-        ip = get_ip_address(request)
-        if not ip in article.views.all():
-            article.views.add(ip)
 
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
