@@ -18,9 +18,7 @@ from articles.models import Article
 # APIView for create a new user if form is valid 
 class CustomUserCreate(APIView):
     permission_classes = [AllowAny]
-
     def post(self, request):
-        print(request.data)
         reg_serializer = RegisterSerializer(data=request.data)
         if reg_serializer.is_valid():
             new_user = reg_serializer.save(request)

@@ -88,21 +88,17 @@ class ArticlePostView(APIView):
     parser_classes = (MultiPartParser, FormParser)
     def post(self, request, format=None):
         try:
-            text = request.data['content']
-            content = bleach.clean(text, tags= settings.BLEACH_TAGS, attributes= settings.BLEACH_ATTRIBUTES, 
-            styles= settings.BLEACH_STYLES, protocols= settings.BLEACH_PROTOCOLS,
-            strip=False, 
-            strip_comments=True)
-            Article.objects.create(
-                title = request.data['title'],
-                content = content,
-                image = request.data['image'],
-                author = request.user,
-            )
-            Article.save_categories(title=request.data['title'], categories=request.data['categories'])
-            return Response(status = status.HTTP_200_OK)
+            print(request.data)
+            request.data._mutable = True
+            request.data['author'] = request.user
+            request.data._mutable = False
+            serializer = ArticleSerializer(data=request.data)
+            if serializer.is_valid():
+                print("valid")
+                serializer.create(request.data)
+            return Response(status = status.HTTP_201_CREATED)
         except Exception as erro:
-            print(erro)
+            print('Temos um error', erro)
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 

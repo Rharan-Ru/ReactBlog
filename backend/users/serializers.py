@@ -38,12 +38,8 @@ class RegisterSerializer(serializers.Serializer):
         }
     
     def save(self, request):
-        print('usuario sendo criado')
         adapter = get_adapter()
-        print(adapter)
         user = adapter.new_user(request)
-        print(user)
-
         self.cleaned_data = self.get_cleaned_data()
         adapter.save_user(request, user, self)
         setup_user_email(request, user, [])

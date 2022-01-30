@@ -107,16 +107,18 @@ const CreatePost = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		let formData = new FormData();
-		formData.append('title', postData.title);
-		formData.append('content', postDataContent);
-		formData.append('image', postimage.image[0]);
-		formData.append('categories', personName);
-		console.log(postDataContent);
-		axiosInstance.post(`create/`, formData);
-		// history({
-		// 	pathname: '/',
-		// });
-		// window.location.reload();
+		try {
+			formData.append('title', postData.title);
+			formData.append('content', postDataContent);
+			formData.append('image', postimage.image[0]);
+			formData.append('categories', personName);
+			console.log(postDataContent);
+			axiosInstance.post(`create/`, formData);
+		}
+		catch (error) {
+			console.error(error);
+		};
+		window.location.reload();
 	};
 
 	const modules = {
@@ -150,18 +152,17 @@ const CreatePost = () => {
 			typeof value === 'string' ? value.split(',') : value,
 		);
 	};
-
+	const formRef = React.useRef();
 	return (
 		<div className={classes.paper}>
 			<Typography className={classes.titleHeader} align='center' gutterBottom variant="h5" component="div">
                 Crie algo novo!
             </Typography>
-			<form className={classes.form} noValidate>
+			<form className={classes.form} ref={formRef} noValidate onSubmit={handleSubmit}>
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<TextField
 							variant="outlined"
-							required
 							fullWidth
 							id="title"
 							label="Post Title"
@@ -169,6 +170,7 @@ const CreatePost = () => {
 							autoComplete="title"
 							onChange={handleChange}
 							style={{ color: 'white'}}
+							required={true}
 						/>
 					</Grid>
 					<Grid item xs={12} style={{ height: '100%' }}>
@@ -177,10 +179,9 @@ const CreatePost = () => {
 							value={postDataContent}
 							onChange={(value) => updateDataContent(value)}
 							modules={modules}
-							// formats={formats}
 							style={{ height: '100%', border: '1px solid black', }}
 							height={400}
-							required
+							required={true}
 						/>
 					</Grid>
 					<Grid item lg={12} md={12} sm={12} style={{ width: '100%' }}>
@@ -194,6 +195,7 @@ const CreatePost = () => {
 							input={<OutlinedInput label="Tag" />}
 							renderValue={(selected) => selected.join(', ')}
 							style={{ width: '100%' }}
+							required={true}
 						>
 							{names.map((name) => (
 								<MenuItem key={name} value={name}>
@@ -209,6 +211,7 @@ const CreatePost = () => {
 								component="img"
 								image={previewData}
 								style={{ width: '100%', height: '40vh', objectFit: 'contain' }}
+								required={true}
 							/>
 						</Grid>
 						<Grid item xs={12} style={{ width: '100%', height: '100%' }} >
@@ -221,6 +224,7 @@ const CreatePost = () => {
 								name="image"
 								type="file"
 								style={{ width: '100%' }}
+								required={true}
 							/>
 						</Grid>
 					</Grid>
@@ -231,7 +235,7 @@ const CreatePost = () => {
 					variant="contained"
 					color="primary"
 					className={classes.submit}
-					onClick={handleSubmit}
+					onClick={() => formRef.current.reportValidity()}
 				>
 					Create Post
 				</Button>

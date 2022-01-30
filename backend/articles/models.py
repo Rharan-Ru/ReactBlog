@@ -44,14 +44,14 @@ class Article(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if self.image:
-            img = Image.open(self.image.path)
-            if img.height > 600 or img.width > 600:
-                output_size = (600, 600)
-                img.image(output_size)
-                img.save(self.image.path, quality=80, optmize=True)
-        self.slug = slugify(self.title)
-        super(Article, self).save(*args, **kwargs)
+        if not self.id:
+            super(Article, self).save(*args, **kwargs)
+            if self.image:
+                img = Image.open(self.image.path)
+                if img.height > 600 or img.width > 600:
+                    output_size = (600, 600)
+                    img.thumbnail(output_size)
+                    img.save(self.image.path, quality=80, optmize=True)        
 
     def save_categories(title, categories):
         article = Article.objects.get(title = title)

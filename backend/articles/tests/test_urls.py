@@ -10,7 +10,7 @@ from users.models import User
 from ..models import Article, Category
 
 from ..views import (ArticlesView, PopularArticlesView, PopularWeekArticlesView,ArticlesByCategoriesView, 
-ArticleDetailView, UserDetailsUpdateView)
+ArticleDetailView, UserDetailsUpdateView, ArticlePostView)
 
 from ..views import (AdminPageView, AdminDetailsView)
 
@@ -38,6 +38,7 @@ class TestUrls(TestCase):
         Category.objects.create(name="Anime")
         Article.objects.create(
             title = 'test',
+            slug = 'test',
             content = 'content',
             author = self.user,
         )
@@ -80,6 +81,18 @@ class TestUrls(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEquals(resolve(url).func.view_class, UserDetailsUpdateView)
 
+    def test_post_article_url(self):
+        data = {
+            'title': ['post for test'], 
+            'content': ['<p>aaaaa</p>'], 
+            'categories': ['Geral'], 
+            'image': ['<InMemoryUploadedFile: f0afcbce7ed4a7df7b822964501bf995.jpg (image/jpeg)>']
+        }
+        url = reverse('create-post')
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(resolve(url).func.view_class, ArticlePostView)
+
 
 class TestAdminUrls(TestCase):
     def setUp(self):
@@ -107,6 +120,7 @@ class TestAdminUrls(TestCase):
         Category.objects.create(name="Anime")
         Article.objects.create(
             title = 'test',
+            slug = 'test',
             content = 'content',
             author = self.user,
         )

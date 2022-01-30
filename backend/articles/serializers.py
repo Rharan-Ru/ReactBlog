@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import Article
 from users.models import User
 from django.utils.safestring import SafeString
+from django.utils.text import slugify
+from django.conf import settings
+import bleach
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -23,5 +26,22 @@ class ArticleSerializer(serializers.ModelSerializer):
         return obj.author.username
     
     def get_content(self, obj):
-
         return obj.content
+
+    def create(self, validated_data):
+        title = validated_data['title']
+        content = validated_data['content']
+        image = validated_data['image']
+        author = validated_data['author']
+        categories = validated_data['categories']
+        content = bleach.clean(content, tags= settings.BLEACH_TAGS, attributes= settings.BLEACH_ATTRIBUTES, 
+        styles= settings.BLEACH_STYLES, protocols= settings.BLEACH_PROTOCOLS, strip=False, strip_comments=True)
+        article = Article.objects.create(
+            title = title,
+            content = content,
+            image = image,
+            slug = slugify(title),
+            author = author,
+        )
+        Article.save_categories(title=title, categories=categories)
+        return article
