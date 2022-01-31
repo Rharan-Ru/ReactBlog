@@ -10,9 +10,9 @@ from users.models import User
 from ..models import Article, Category
 
 from ..views import (ArticlesView, PopularArticlesView, PopularWeekArticlesView,ArticlesByCategoriesView, 
-ArticleDetailView, UserDetailsUpdateView, ArticlePostView)
+ArticleDetailView, UserDetailsUpdateView, ArticlePostView, UserUpdateView)
 
-from ..views import (AdminPageView, AdminDetailsView)
+from ..views import (AdminPageView, AdminDetailsView, AdminDeleteView, AdminUpdateView)
 
 
 class TestUrls(TestCase):
@@ -93,6 +93,19 @@ class TestUrls(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEquals(resolve(url).func.view_class, ArticlePostView)
 
+    def test_update_article_url(self):
+        data = {
+            'title': ['post for test'], 
+            'content': ['<p>aaaaa</p>'], 
+            'categories': ['Anime'], 
+        }
+        url = reverse('update-view', args=['test'])
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(resolve(url).func.view_class, UserUpdateView)
+        article = Article.objects.all()[0]
+        print(article.content)
+
 
 class TestAdminUrls(TestCase):
     def setUp(self):
@@ -138,3 +151,22 @@ class TestAdminUrls(TestCase):
         response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEquals(resolve(url).func.view_class, AdminDetailsView)
+
+    def test_post_admin_update_article_url(self):
+        data = {
+            'title': ['post for test'], 
+            'content': ['<p>aaaaa</p>'], 
+            'categories': ['Anime'], 
+        }
+        url = reverse('admin-update-view', args=['test'])
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(resolve(url).func.view_class, AdminUpdateView)
+        article = Article.objects.all()[0]
+        print(article.content)
+
+    def test_post_admin_delete_article_url(self):
+        url = reverse('admin-delete-view', args=['test'])
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEquals(resolve(url).func.view_class, AdminDeleteView)

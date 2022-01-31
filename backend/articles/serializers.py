@@ -45,3 +45,20 @@ class ArticleSerializer(serializers.ModelSerializer):
         )
         Article.save_categories(title=title, categories=categories)
         return article
+
+    def update(self, instance, validated_data):
+        print("instance: ", instance)
+        print("validated_data: ", validated_data)
+        print(validated_data['title'])
+        content = bleach.clean(validated_data['content'], tags= settings.BLEACH_TAGS, attributes= settings.BLEACH_ATTRIBUTES, 
+        styles= settings.BLEACH_STYLES, protocols= settings.BLEACH_PROTOCOLS, strip=False, strip_comments=True)
+
+        instance.title = validated_data.get('title', instance.title)
+        instance.image = validated_data.get('image', instance.image)
+        instance.slug = slugify(validated_data.get('title', instance.title))
+        instance.content = validated_data.get('content', content)
+
+        instance.category.clear()
+        instance.save()
+        Article.save_categories(title=validated_data['title'], categories=validated_data['categories'])
+        return instance

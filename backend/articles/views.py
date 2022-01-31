@@ -126,33 +126,10 @@ class UserUpdateView(APIView, PostUserWritePermission):
             return Response(status=status.HTTP_404_NOT_FOUND)
         else: 
             try:
-                print(request.data['categories'])
-                text = request.data['content']
-                content = bleach.clean(text, tags= settings.BLEACH_TAGS, attributes= settings.BLEACH_ATTRIBUTES, 
-                styles= settings.BLEACH_STYLES, protocols= settings.BLEACH_PROTOCOLS,
-                strip=False, 
-                strip_comments=True)
-
                 article = Article.objects.get(slug=slug)
-                article.title = request.data['title']
-                article.slug = slugify(request.data['title'], allow_unicode=True)
-                article.content = content
-
-                if 'media' not in request.data['image']:
-                    article.image = request.data['image']
-
-                article.category.clear()
-                article.save()
-
-                if len(request.data['categories']) > 0:
-                    for categ in request.data['categories'].split(','):
-                        category= Category.objects.get(name = categ)
-                        article.category.add(category)
-                        article.save()
-                else:
-                    category= Category.objects.get(name = 'Geral')
-                    article.category.add(category)
-                    article.save()
+                serializer = ArticleSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.update(instance=article, validated_data=request.data)
                 return Response(status = status.HTTP_200_OK)
             except Exception as erro:
                 print(erro)
@@ -191,32 +168,10 @@ class AdminUpdateView(APIView):
     permission_classes = [IsAdminUser]
     def post(self, request, slug, format=None):
         try:
-            text = request.data['content']
-            content = bleach.clean(text, tags= BLEACH_TAGS, attributes= BLEACH_ATTRIBUTES, 
-            styles= BLEACH_STYLES, protocols= BLEACH_PROTOCOLS,
-            strip=False, 
-            strip_comments=True)
             article = Article.objects.get(slug=slug)
-
-            article.title = request.data['title']
-            article.slug = slugify(request.data['title'], allow_unicode=True)
-            article.content = content
-            if 'media' not in request.data['image']:
-                article.image = request.data['image']
-
-            article.category.clear()
-            article.save()
-
-            if len(request.data['categories']) > 0:
-                for categ in request.data['categories'].split(','):
-                    category= Category.objects.get(name = categ)
-                    if category not in article.category.all():
-                        article.category.add(category)
-                        article.save()
-            else:
-                category= Category.objects.get(name = 'General')
-                article.category.add(category)
-                article.save()
+            serializer = ArticleSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.update(instance=article, validated_data=request.data)
             return Response(status = status.HTTP_200_OK)
         except Exception as erro:
             print(erro)
@@ -229,9 +184,8 @@ class AdminDeleteView(APIView):
         article = Article.objects.get(slug=slug)
         if not Article.objects.filter(slug=slug).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)
-
         article.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AdminPublishedView(APIView):
