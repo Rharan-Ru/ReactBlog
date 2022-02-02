@@ -47,9 +47,6 @@ class ArticleSerializer(serializers.ModelSerializer):
         return article
 
     def update(self, instance, validated_data):
-        print("instance: ", instance)
-        print("validated_data: ", validated_data)
-        print(validated_data['title'])
         content = bleach.clean(validated_data['content'], tags= settings.BLEACH_TAGS, attributes= settings.BLEACH_ATTRIBUTES, 
         styles= settings.BLEACH_STYLES, protocols= settings.BLEACH_PROTOCOLS, strip=False, strip_comments=True)
 

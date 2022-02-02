@@ -44,6 +44,7 @@ class Article(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
         super(Article, self).save(*args, **kwargs)
         if self.image:
             img = Image.open(self.image.path)

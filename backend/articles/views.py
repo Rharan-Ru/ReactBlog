@@ -23,16 +23,14 @@ class ArticlesView(APIView):
     permission_classes = [AllowAny]
     def get(self, request, format=None):
         articles = Article.objects.all().filter(status='published').order_by('-published_date')
-        lasts_articles = articles[0: 4]
-        lasts_serializer = ArticleSerializer(lasts_articles, many=True)
- 
+        lasts_serializer = ArticleSerializer(articles[0: 4], many=True)
         todos = articles.all().count()
 
         paginator = Paginator(articles[4:], 8)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        serializer = ArticleSerializer(page_obj, many=True)
 
+        serializer = ArticleSerializer(page_obj, many=True)
         return Response({'data': serializer.data, 'num_artigos': todos, 'lasts': lasts_serializer.data}, status = status.HTTP_200_OK)
 
 
@@ -70,7 +68,6 @@ class ArticlesByCategoriesView(APIView):
 class ArticleDetailView(APIView, PostUserWritePermission):
     permission_classes = [IsAuthenticatedOrReadOnly]
     def get(self, request, slug, format=None):
-
         article = Article.objects.get(slug=slug)
         if not Article.objects.filter(slug=slug).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -88,7 +85,6 @@ class ArticlePostView(APIView):
     parser_classes = (MultiPartParser, FormParser)
     def post(self, request, format=None):
         try:
-            print(request.data)
             request.data._mutable = True
             request.data['author'] = request.user
             request.data._mutable = False
@@ -140,7 +136,7 @@ class UserUpdateView(APIView, PostUserWritePermission):
 class AdminPageView(APIView):
     permission_classes = [IsAdminUser]
     def get(self, request, format=None):
-        articles = Article.objects.all()
+        articles = Article.objects.all().filter(status='published').order_by('-published_date')
  
         todos = articles.all().count()
 

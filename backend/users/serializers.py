@@ -18,7 +18,7 @@ class RegisterSerializer(serializers.Serializer):
     password2 = serializers.CharField(required=True, write_only=True)
     class Meta:
         model = User
-        fields = ('email', 'user_name', 'first_name', 'last_name', 'password1', 'password2')
+        fields = ('email', 'username', 'first_name', 'last_name', 'password1', 'password2')
 
     def validate_password1(self, password):
         return get_adapter().clean_password(password)
@@ -32,7 +32,7 @@ class RegisterSerializer(serializers.Serializer):
         return {
             'first_name': self.validated_data.get('first_name', ''),
             'last_name': self.validated_data.get('last_name', ''),
-            'user_type': self.validated_data.get('user_type', ''),
+            'username': self.validated_data.get('username', ''),
             'password1': self.validated_data.get('password1', ''),
             'email': self.validated_data.get('email', ''),
         }
@@ -44,7 +44,6 @@ class RegisterSerializer(serializers.Serializer):
         adapter.save_user(request, user, self)
         setup_user_email(request, user, [])
         user.save()
-        print('usuario criado com suscesso')
         return user
 
 

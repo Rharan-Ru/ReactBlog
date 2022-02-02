@@ -104,7 +104,6 @@ class TestUrls(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEquals(resolve(url).func.view_class, UserUpdateView)
         article = Article.objects.all()[0]
-        print(article.content)
 
 
 class TestAdminUrls(TestCase):
@@ -163,7 +162,6 @@ class TestAdminUrls(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEquals(resolve(url).func.view_class, AdminUpdateView)
         article = Article.objects.all()[0]
-        print(article.content)
 
     def test_post_admin_delete_article_url(self):
         url = reverse('admin-delete-view', args=['test'])
