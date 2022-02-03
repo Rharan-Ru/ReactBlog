@@ -53,6 +53,7 @@ class PopularArticlesView(APIView):
 
 
 class ArticlesByCategoriesView(APIView):
+    permission_classes = [AllowAny]
     def get(self, request, category, index, format=None):
         index_f = (index * 5) - 5
         index_s = index * 5
@@ -75,7 +76,6 @@ class ArticleDetailView(APIView, PostUserWritePermission):
         ip = get_ip_address(request)
         if not ip in article.views.all():
             article.views.add(ip)
-
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
 
@@ -92,9 +92,11 @@ class ArticlePostView(APIView):
             if serializer.is_valid():
                 print("valid")
                 serializer.create(request.data)
+            else:
+                print("not valid")
             return Response(status = status.HTTP_201_CREATED)
         except Exception as erro:
-            print('Temos um error', erro)
+            print('Temos um error: ', erro)
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 
@@ -119,7 +121,7 @@ class UserUpdateView(APIView, PostUserWritePermission):
     def post(self, request, slug, format=None):
         article = Article.objects.get(slug=slug)
         if article.author != request.user:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         else: 
             try:
                 article = Article.objects.get(slug=slug)

@@ -29,21 +29,30 @@ class ArticleSerializer(serializers.ModelSerializer):
         return obj.content
 
     def create(self, validated_data):
+        print("Artigo sendo criado")
         title = validated_data['title']
         content = validated_data['content']
-        image = validated_data['image']
         author = validated_data['author']
         categories = validated_data['categories']
         content = bleach.clean(content, tags= settings.BLEACH_TAGS, attributes= settings.BLEACH_ATTRIBUTES, 
         styles= settings.BLEACH_STYLES, protocols= settings.BLEACH_PROTOCOLS, strip=False, strip_comments=True)
-        article = Article.objects.create(
-            title = title,
-            content = content,
-            image = image,
-            slug = slugify(title),
-            author = author,
-        )
+        if 'image' in validated_data:
+            image = validated_data['image']
+            article = Article.objects.create(
+                title = title,
+                content = content,
+                image = image,
+                author = author,
+            )
+        else:
+            article = Article.objects.create(
+                title = title,
+                content = content,
+                author = author,
+            )
+
         Article.save_categories(title=title, categories=categories)
+        print("Artigo criado")
         return article
 
     def update(self, instance, validated_data):

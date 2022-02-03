@@ -82,16 +82,20 @@ class TestUrls(TestCase):
         self.assertEquals(resolve(url).func.view_class, UserDetailsUpdateView)
 
     def test_post_article_url(self):
-        data = {
-            'title': ['post for test'], 
-            'content': ['<p>aaaaa</p>'], 
-            'categories': ['Geral'], 
-            'image': ['<InMemoryUploadedFile: f0afcbce7ed4a7df7b822964501bf995.jpg (image/jpeg)>']
-        }
+        data = {'title': ['aaaassssss0111'], 'content': ['<p>asdasdsad</p>'], 'categories': ['Anime']}
+
         url = reverse('create-post')
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEquals(resolve(url).func.view_class, ArticlePostView)
+
+    def test_post_anonymous_user_article_url(self):
+        self.client = APIClient()
+        data = {'title': ['aaaassssss0111'], 'content': ['<p>asdasdsad</p>'], 'categories': ['Anime']}
+
+        url = reverse('create-post')
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_update_article_url(self):
         data = {

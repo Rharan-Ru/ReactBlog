@@ -1,3 +1,4 @@
+from tkinter import ARC
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -5,6 +6,7 @@ from django.test import TestCase
 from django.urls import reverse, resolve
 from django.conf import settings
 from django.utils import timezone
+from django.utils.text import slugify
 
 from datetime import timedelta
 
@@ -79,3 +81,23 @@ class TestViews(TestCase):
         response = self.client1.get(url, follow=True)
         self.assertEquals(len(response.data), 5)
     
+    def test_get_articles_detail_data_view(self):
+        url1 = reverse('article-detail', args=['usuario1-test0'])
+        url2 = reverse('article-detail', args=['usuario1-test0'])
+        response1 = self.client1.get(url1, follow=True)
+        self.assertEquals(response1.data['title'], 'usuario1 test0')
+        self.assertEquals(response1.data['slug'], 'usuario1-test0')
+        self.assertEquals(response1.data['author'], 'usuario1')
+        self.assertEquals(response1.data['content'], 'content')
+        self.assertEquals(response1.data['views'], 1)
+    
+    def test_post_article_data_view(self):
+        data = {'title': ['testezin'], 'content': ['<p>aaa</p>'], 'categories': ['Anime']}
+        
+        url = reverse('create-post')
+        response = self.client1.post(url, data)
+        article = Article.objects.get(title='testezin')
+        self.assertEquals(article.title, 'testezin')
+        self.assertEquals(article.slug, slugify('testezin'))
+        self.assertEquals(article.author, self.user1)
+        self.assertIn('aaa', article.content)
